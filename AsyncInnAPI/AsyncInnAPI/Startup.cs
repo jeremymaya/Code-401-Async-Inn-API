@@ -41,12 +41,12 @@ namespace AsyncInnAPI
 
             app.UseRouting();
 
+            // Sets the default routing for incoming requests within the API application
+            // By default, the convention is {site}/[controller]/[action]/[id]
+            // id is not required, allowing it to be nullable
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
