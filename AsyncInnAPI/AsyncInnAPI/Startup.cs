@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AsyncInnAPI.Data;
+using AsyncInnAPI.Models.Interfaces;
+using AsyncInnAPI.Models.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +30,14 @@ namespace AsyncInnAPI
         {
             // Enables the use of MVC controllers
             services.AddMvc();
+
             services.AddDbContext<AsyncInnDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddTransient<IHotelManager, HotelManager>();
+
+            services.AddTransient<IRoomManager, RoomManager>();
+
+            services.AddTransient<IAmenityManager, AmenityManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
