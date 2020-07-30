@@ -24,7 +24,7 @@ git clone https://github.com/jeremymaya/Code-401-Async-Inn-API.git
 
 ## To run the program from Visual Studio:
 
-Select ```File``` -> ```Open``` -> ```Code-401-Async-Inn-API``
+Select ```File``` -> ```Open``` -> ```Code-401-Async-Inn-API```
 
 Next navigate to the location you cloned the Repository.
 
@@ -36,7 +36,7 @@ Then select and open ```AsyncInnAPI.sln```
 
 ## Entity Relationship Diagram
 
-![Entity Relationship Diagram](Assets/ERD.PNG)
+![Entity Relationship Diagram](Assets/ERD.png)
 
 Diagram provided by: [Amanda Iverson](https://github.com/Aiverson1011)
 
