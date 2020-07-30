@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AsyncInnAPI.Data;
 using AsyncInnAPI.Models;
+using AsyncInnAPI.Models.Interfaces;
 
 namespace AsyncInnAPI.Controllers
 {
@@ -14,25 +14,25 @@ namespace AsyncInnAPI.Controllers
     [ApiController]
     public class RoomsController : ControllerBase
     {
-        private readonly AsyncInnDbContext _context;
+        private readonly IRoomManager _room;
 
-        public RoomsController(AsyncInnDbContext context)
+        public RoomsController(IRoomManager room)
         {
-            _context = context;
+            _room = room;
         }
 
         // GET: api/Rooms
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Room>>> GetRooms()
         {
-            return await _context.Rooms.ToListAsync();
+            return await _room.GetRooms();
         }
 
         // GET: api/Rooms/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Room>> GetRoom(int id)
         {
-            var room = await _context.Rooms.FindAsync(id);
+            var room = await _room.GetRoom(id);
 
             if (room == null)
             {
@@ -53,11 +53,9 @@ namespace AsyncInnAPI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(room).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _room.UpdateRoom(room);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -80,8 +78,7 @@ namespace AsyncInnAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Room>> PostRoom(Room room)
         {
-            _context.Rooms.Add(room);
-            await _context.SaveChangesAsync();
+            await _room.UpdateRoom(room);
 
             return CreatedAtAction("GetRoom", new { id = room.ID }, room);
         }
@@ -90,21 +87,20 @@ namespace AsyncInnAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Room>> DeleteRoom(int id)
         {
-            var room = await _context.Rooms.FindAsync(id);
+            var room = await _room.GetRoom(id);
             if (room == null)
             {
                 return NotFound();
             }
 
-            _context.Rooms.Remove(room);
-            await _context.SaveChangesAsync();
+            await _room.DeleteRoom(id);
 
             return room;
         }
 
         private bool RoomExists(int id)
         {
-            return _context.Rooms.Any(e => e.ID == id);
+            return _room.GetRooms().Result.Any(e => e.ID == id);
         }
     }
 }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AsyncInnAPI.Data;
 using AsyncInnAPI.Models;
 using AsyncInnAPI.Models.Interfaces;
 
