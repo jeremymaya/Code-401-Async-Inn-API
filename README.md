@@ -38,8 +38,6 @@ Then select and open ```AsyncInnAPI.sln```
 
 ![Entity Relationship Diagram](Assets/ERD.png)
 
-Diagram provided by: [Amanda Iverson](https://github.com/Aiverson1011)
-
 * Hotel table has one to many relationship with HotelRoom table
 * Room table has one to many relationship with HotelRoom table
 * Amenities table has one to many relationship with RoomAmenities table
@@ -47,10 +45,13 @@ Diagram provided by: [Amanda Iverson](https://github.com/Aiverson1011)
 * RoomAmenities table is a pure join table
 * Layout is an enum
 
+Diagram Credit: [Amanda Iverson](https://github.com/Aiverson1011)
+
 ----
 
 ## Credits
 
+* [Github - Amanda Iverson](https://github.com/Aiverson1011)
 * [ASP.NET Core Development with macOS](https://gist.github.com/jeremymaya/a36c1de8220d76beca85a2804a2cecc4)
 
 ----
