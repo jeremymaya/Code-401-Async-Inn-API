@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AsyncInnAPI.Data;
 using AsyncInnAPI.Models.Interfaces;
@@ -36,15 +37,18 @@ namespace AsyncInnAPI.Models.Services
 
         public async Task<Hotel> GetHotel(int id)
         {
-            var hotel = await _context.Hotels.FindAsync(id);
-
+            var hotel = await _context.Hotels.Where(x => x.Id == id)
+                                             .Include(x => x.Rooms)
+                                             .ThenInclude(x => x.Room)
+                                             .FirstOrDefaultAsync();
             return hotel;
         }
 
         public async Task<List<Hotel>> GetHotels()
         {
-            var hotels = await _context.Hotels.ToListAsync();
-
+            var hotels = await _context.Hotels.Include(x => x.Rooms)
+                                              .ThenInclude(x => x.Room)
+                                              .ToListAsync();
             return hotels;
         }
 

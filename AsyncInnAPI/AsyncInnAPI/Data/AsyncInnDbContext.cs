@@ -12,10 +12,13 @@ namespace AsyncInnAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<RoomAmenity>().HasKey(ce => new { ce.RoomId, ce.AmenityId });
+            modelBuilder.Entity<HotelRoom>().HasKey(ce => new { ce.HotelId, ce.RoomNumber});
+
             modelBuilder.Entity<Hotel>().HasData(
                 new Hotel
                 {
-                    ID = 1,
+                    Id = 1,
                     Name = "Hotel One",
                     StreetAddress = "1111 One Street",
                     City = "One",
@@ -24,7 +27,7 @@ namespace AsyncInnAPI.Data
                 },
                 new Hotel
                 {
-                    ID = 2,
+                    Id = 2,
                     Name = "Hotel Two",
                     StreetAddress = "2222 Two Street",
                     City = "Two",
@@ -33,7 +36,7 @@ namespace AsyncInnAPI.Data
                 },
                 new Hotel
                 {
-                    ID = 3,
+                    Id = 3,
                     Name = "Hotel Three",
                     StreetAddress = "3333 Three Street",
                     City = "Three",
@@ -42,7 +45,7 @@ namespace AsyncInnAPI.Data
                 },
                 new Hotel
                 {
-                    ID = 4,
+                    Id = 4,
                     Name = "Hotel Four",
                     StreetAddress = "4444 Four Street",
                     City = "Four",
@@ -51,7 +54,7 @@ namespace AsyncInnAPI.Data
                 },
                 new Hotel
                 {
-                    ID = 5,
+                    Id = 5,
                     Name = "Hotel Five",
                     StreetAddress = "5555 Five Street",
                     City = "Five",
@@ -63,37 +66,37 @@ namespace AsyncInnAPI.Data
             modelBuilder.Entity<Room>().HasData(
                 new Room
                 {
-                    ID = 1,
+                    Id = 1,
                     Name = "Room One",
                     Layout = Layout.OneBedroom
                 },
                 new Room
                 {
-                    ID = 2,
+                    Id = 2,
                     Name = "Room Two",
                     Layout = Layout.Studio
                 },
                 new Room
                 {
-                    ID = 3,
+                    Id = 3,
                     Name = "Room Three",
                     Layout = Layout.TwoBedroom
                 },
                 new Room
                 {
-                    ID = 4,
+                    Id = 4,
                     Name = "Room Four",
                     Layout = Layout.Studio
                 },
                 new Room
                 {
-                    ID = 5,
+                    Id = 5,
                     Name = "Room Five",
                     Layout = Layout.OneBedroom
                 },
                 new Room
                 {
-                    ID = 6,
+                    Id = 6,
                     Name = "Room Six",
                     Layout = Layout.TwoBedroom
                 }
@@ -102,27 +105,27 @@ namespace AsyncInnAPI.Data
             modelBuilder.Entity<Amenity>().HasData(
                 new Amenity
                 {
-                    ID = 1,
+                    Id = 1,
                     Name = "Hair Dryer"
                 },
                 new Amenity
                 {
-                    ID = 2,
+                    Id = 2,
                     Name = "Water"
                 },
                 new Amenity
                 {
-                    ID = 3,
+                    Id = 3,
                     Name = "Extra Pillows"
                 },
                 new Amenity
                 {
-                    ID = 4,
+                    Id = 4,
                     Name = "Extra Blankets"
                 },
                 new Amenity
                 {
-                    ID = 5,
+                    Id = 5,
                     Name = "Wine"
                 }
                 );
@@ -131,5 +134,7 @@ namespace AsyncInnAPI.Data
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Amenity> Amenities { get; set; }
+        public DbSet<RoomAmenity> RoomAmenities { get; set; }
+        public DbSet<HotelRoom> HotelRooms { get; set; }
     }
 }

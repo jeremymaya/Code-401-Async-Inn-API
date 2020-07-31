@@ -48,7 +48,7 @@ namespace AsyncInnAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRoom(int id, Room room)
         {
-            if (id != room.ID)
+            if (id != room.Id)
             {
                 return BadRequest();
             }
@@ -80,7 +80,7 @@ namespace AsyncInnAPI.Controllers
         {
             await _room.UpdateRoom(room);
 
-            return CreatedAtAction("GetRoom", new { id = room.ID }, room);
+            return CreatedAtAction("GetRoom", new { id = room.Id }, room);
         }
 
         // DELETE: api/Rooms/5
@@ -98,9 +98,33 @@ namespace AsyncInnAPI.Controllers
             return room;
         }
 
+        [HttpPost]
+        [Route("{roomId}/Amenity/{amenityId}")]
+        public async Task<ActionResult<Room>> AddAmenityToRoom(int roomId, int amenityId)
+        {
+            var room = await _room.AddAmenityToRoom(roomId, amenityId);
+
+            return room;
+        }
+
+        [HttpDelete]
+        [Route("{roomId}/Amenity/{amenityId}")]
+        public async Task<ActionResult<Room>> RemoveAmentityFromRoom(int roomId, int amenityId)
+        {
+            var room = await _room.GetRoom(roomId);
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            await _room.RemoveAmentityFromRoom(roomId, amenityId);
+
+            return room;
+        }
+
         private bool RoomExists(int id)
         {
-            return _room.GetRooms().Result.Any(e => e.ID == id);
+            return _room.GetRooms().Result.Any(e => e.Id == id);
         }
     }
 }

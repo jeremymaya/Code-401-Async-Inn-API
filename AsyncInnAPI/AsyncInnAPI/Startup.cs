@@ -33,11 +33,17 @@ namespace AsyncInnAPI
 
             services.AddDbContext<AsyncInnDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddControllers().AddNewtonsoftJson(options =>
+                        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                        );
+
             services.AddTransient<IHotelManager, HotelManager>();
 
             services.AddTransient<IRoomManager, RoomManager>();
 
             services.AddTransient<IAmenityManager, AmenityManager>();
+
+            services.AddTransient<IHotelRoomManager, HotelRoomManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

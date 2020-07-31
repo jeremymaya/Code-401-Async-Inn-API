@@ -48,7 +48,7 @@ namespace AsyncInnAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAmenity(int id, Amenity amenity)
         {
-            if (id != amenity.ID)
+            if (id != amenity.Id)
             {
                 return BadRequest();
             }
@@ -80,7 +80,7 @@ namespace AsyncInnAPI.Controllers
         {
             await _amenity.CreateAmenity(amenity);
 
-            return CreatedAtAction("GetAmenity", new { id = amenity.ID }, amenity);
+            return CreatedAtAction("GetAmenity", new { id = amenity.Id }, amenity);
         }
 
         // DELETE: api/Amenities/5
@@ -100,7 +100,7 @@ namespace AsyncInnAPI.Controllers
 
         private bool AmenityExists(int id)
         {
-            return _amenity.GetAmenities().Result.Any(e => e.ID == id);
+            return _amenity.GetAmenities().Result.Any(e => e.Id == id);
         }
     }
 }
