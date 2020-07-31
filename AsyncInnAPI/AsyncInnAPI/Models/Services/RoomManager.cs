@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AsyncInnAPI.Data;
 using AsyncInnAPI.Models.Interfaces;
@@ -14,6 +15,23 @@ namespace AsyncInnAPI.Models.Services
         public RoomManager(AsyncInnDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<Room> AddAmenityToRoom(int roomId, int amenityId)
+        {
+            RoomAmenity roomAmenity = new RoomAmenity()
+            {
+                RoomId = roomId,
+                AmenityId = amenityId
+            };
+
+            _context.Entry(roomAmenity).State = EntityState.Added;
+
+            await _context.SaveChangesAsync();
+
+            var room = await GetRoom(roomId);
+
+            return room;
         }
 
         public async Task<Room> CreateRoom(Room room)
@@ -36,16 +54,28 @@ namespace AsyncInnAPI.Models.Services
 
         public async Task<Room> GetRoom(int id)
         {
-            var room = await _context.Rooms.FindAsync(id);
-
+            var room = await _context.Rooms.Where(x => x.Id == id)
+                                           .Include(x => x.RoomAmenities)
+                                           .ThenInclude(x => x.Amenity)
+                                           .FirstOrDefaultAsync();
             return room;
         }
 
         public async Task<List<Room>> GetRooms()
         {
-            var rooms = await _context.Rooms.ToListAsync();
-
+            var rooms = await _context.Rooms.Include(x => x.RoomAmenities)
+                                            .ThenInclude(x => x.Amenity)
+                                            .ToListAsync();
             return rooms;
+        }
+
+        public async Task RemoveAmentityFromRoom(int roomId, int amenityId)
+        {
+            RoomAmenity roomAmenity = await _context.RoomAmenities.Where(x => x.AmenityId == amenityId).FirstOrDefaultAsync();
+
+            _context.Entry(roomAmenity).State = EntityState.Deleted;
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateRoom(Room room)

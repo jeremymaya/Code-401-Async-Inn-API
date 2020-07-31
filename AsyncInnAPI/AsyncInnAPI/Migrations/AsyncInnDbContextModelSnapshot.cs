@@ -20,7 +20,7 @@ namespace AsyncInnAPI.Migrations
 
             modelBuilder.Entity("AsyncInnAPI.Models.Amenity", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -28,41 +28,41 @@ namespace AsyncInnAPI.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Amenities");
 
                     b.HasData(
                         new
                         {
-                            ID = 1,
+                            Id = 1,
                             Name = "Hair Dryer"
                         },
                         new
                         {
-                            ID = 2,
+                            Id = 2,
                             Name = "Water"
                         },
                         new
                         {
-                            ID = 3,
+                            Id = 3,
                             Name = "Extra Pillows"
                         },
                         new
                         {
-                            ID = 4,
+                            Id = 4,
                             Name = "Extra Blankets"
                         },
                         new
                         {
-                            ID = 5,
+                            Id = 5,
                             Name = "Wine"
                         });
                 });
 
             modelBuilder.Entity("AsyncInnAPI.Models.Hotel", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -82,14 +82,14 @@ namespace AsyncInnAPI.Migrations
                     b.Property<string>("StreetAddress")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Hotels");
 
                     b.HasData(
                         new
                         {
-                            ID = 1,
+                            Id = 1,
                             City = "One",
                             Name = "Hotel One",
                             Phone = "111-111-1111",
@@ -98,7 +98,7 @@ namespace AsyncInnAPI.Migrations
                         },
                         new
                         {
-                            ID = 2,
+                            Id = 2,
                             City = "Two",
                             Name = "Hotel Two",
                             Phone = "222-222-2222",
@@ -107,7 +107,7 @@ namespace AsyncInnAPI.Migrations
                         },
                         new
                         {
-                            ID = 3,
+                            Id = 3,
                             City = "Three",
                             Name = "Hotel Three",
                             Phone = "333-333-3333",
@@ -116,7 +116,7 @@ namespace AsyncInnAPI.Migrations
                         },
                         new
                         {
-                            ID = 4,
+                            Id = 4,
                             City = "Four",
                             Name = "Hotel Four",
                             Phone = "206-681-4444",
@@ -125,7 +125,7 @@ namespace AsyncInnAPI.Migrations
                         },
                         new
                         {
-                            ID = 5,
+                            Id = 5,
                             City = "Five",
                             Name = "Hotel Five",
                             Phone = "555-555-5555",
@@ -136,7 +136,7 @@ namespace AsyncInnAPI.Migrations
 
             modelBuilder.Entity("AsyncInnAPI.Models.Room", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -147,47 +147,77 @@ namespace AsyncInnAPI.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Rooms");
 
                     b.HasData(
                         new
                         {
-                            ID = 1,
+                            Id = 1,
                             Layout = 1,
                             Name = "Room One"
                         },
                         new
                         {
-                            ID = 2,
+                            Id = 2,
                             Layout = 0,
                             Name = "Room Two"
                         },
                         new
                         {
-                            ID = 3,
+                            Id = 3,
                             Layout = 2,
                             Name = "Room Three"
                         },
                         new
                         {
-                            ID = 4,
+                            Id = 4,
                             Layout = 0,
                             Name = "Room Four"
                         },
                         new
                         {
-                            ID = 5,
+                            Id = 5,
                             Layout = 1,
                             Name = "Room Five"
                         },
                         new
                         {
-                            ID = 6,
+                            Id = 6,
                             Layout = 2,
                             Name = "Room Six"
                         });
+                });
+
+            modelBuilder.Entity("AsyncInnAPI.Models.RoomAmenity", b =>
+                {
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AmenityId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RoomId", "AmenityId");
+
+                    b.HasIndex("AmenityId");
+
+                    b.ToTable("RoomAmenities");
+                });
+
+            modelBuilder.Entity("AsyncInnAPI.Models.RoomAmenity", b =>
+                {
+                    b.HasOne("AsyncInnAPI.Models.Amenity", "Amenity")
+                        .WithMany()
+                        .HasForeignKey("AmenityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AsyncInnAPI.Models.Room", "Room")
+                        .WithMany("RoomAmenities")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
