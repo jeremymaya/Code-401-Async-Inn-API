@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AsyncInnAPI.Models;
+using AsyncInnAPI.Models.Dtos;
 using AsyncInnAPI.Models.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ namespace AsyncInnAPI.Controllers
         // GET: api/Hotels/{hotelId}/Rooms
         [HttpGet]
         [Route("{hotelId}/Rooms")]
-        public async Task<ActionResult<IEnumerable<HotelRoom>>> GetHotelRooms(int hotelId)
+        public async Task<ActionResult<IEnumerable<HotelRoomDto>>> GetHotelRooms(int hotelId)
         {
             return await _hotelRoom.GetHotelRooms(hotelId);
         }
@@ -31,16 +32,16 @@ namespace AsyncInnAPI.Controllers
         // GET: api/Hotels/{hotelId}/Rooms/{roomNumber}
         [HttpGet]
         [Route("{hotelId}/Rooms/{roomNumber}")]
-        public async Task<ActionResult<HotelRoom>> GetHotelRoom(int hotelId, int roomNumber)
+        public async Task<ActionResult<HotelRoomDto>> GetHotelRoom(int hotelId, int roomNumber)
         {
-            var hotelRoom = await _hotelRoom.GetHotelRoom(hotelId, roomNumber);
+            var hotelRoomDto = await _hotelRoom.GetHotelRoom(hotelId, roomNumber);
 
-            if (hotelRoom == null)
+            if (hotelRoomDto == null)
             {
                 return NotFound();
             }
 
-            return hotelRoom;
+            return hotelRoomDto;
         }
 
         // PUT: api/Hotels/{hotelId}/Rooms/{roomNumber}
@@ -48,16 +49,16 @@ namespace AsyncInnAPI.Controllers
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut]
         [Route("{hotelId}/Rooms/{roomNumber}")]
-        public async Task<IActionResult> PutHotelRoom(int hotelId, HotelRoom hotelRoom)
+        public async Task<IActionResult> PutHotelRoom(int hotelId, HotelRoomDto hotelRoomDto)
         {
-            if (hotelId != hotelRoom.HotelId)
+            if (hotelId != hotelRoomDto.HotelId)
             {
                 return BadRequest();
             }
 
             try
             {
-                await _hotelRoom.UpdateHotelRoom(hotelRoom);
+                await _hotelRoom.UpdateHotelRoom(hotelRoomDto);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -79,27 +80,27 @@ namespace AsyncInnAPI.Controllers
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
         [Route("{hotelId}/Rooms")]
-        public async Task<ActionResult<HotelRoom>> PostHotelRoom(int hotelId, HotelRoom hotelRoom)
+        public async Task<ActionResult<HotelRoomDto>> PostHotelRoom(int hotelId, HotelRoomDto hotelRoomDto)
         {
-            await _hotelRoom.CreateHotelRoom(hotelRoom);
+            await _hotelRoom.CreateHotelRoom(hotelRoomDto);
 
-            return CreatedAtAction("GetHotelRoom", new { id = hotelRoom.HotelId }, hotelRoom);
+            return CreatedAtAction("GetHotelRoom", new { id = hotelRoomDto.HotelId }, hotelRoomDto);
         }
 
-        // DELETE: api/Hotels/5
+        // DELETE: api/Hotels/{hotelId}/Rooms/{roomNumber}
         [HttpDelete]
         [Route("{hotelId}/Rooms/{roomNumber}")]
-        public async Task<ActionResult<HotelRoom>> DeleteHotelRoom(int hotelId, int roomNumber)
+        public async Task<ActionResult<HotelRoomDto>> DeleteHotelRoom(int hotelId, int roomNumber)
         {
-            var hotelRoom = await _hotelRoom.GetHotelRoom(hotelId, roomNumber);
-            if (hotelRoom == null)
+            var hotelRoomDto = await _hotelRoom.GetHotelRoom(hotelId, roomNumber);
+            if (hotelRoomDto == null)
             {
                 return NotFound();
             }
 
             await _hotelRoom.DeleteHotelRoom(hotelId, roomNumber);
 
-            return hotelRoom;
+            return hotelRoomDto;
         }
 
         private bool HotelRoomExists(int hotelId)
