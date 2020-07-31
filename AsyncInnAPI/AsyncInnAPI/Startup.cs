@@ -42,6 +42,8 @@ namespace AsyncInnAPI
             services.AddTransient<IRoomManager, RoomManager>();
 
             services.AddTransient<IAmenityManager, AmenityManager>();
+
+            services.AddTransient<IHotelRoomManager, HotelRoomManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

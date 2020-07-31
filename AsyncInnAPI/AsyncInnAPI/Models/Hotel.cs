@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace AsyncInnAPI.Models
@@ -12,5 +13,7 @@ namespace AsyncInnAPI.Models
         public string State { get; set; }
         [DataType(DataType.PhoneNumber)]
         public string Phone { get; set; }
+
+        public ICollection<HotelRoom> Rooms { get; set; }
     }
 }

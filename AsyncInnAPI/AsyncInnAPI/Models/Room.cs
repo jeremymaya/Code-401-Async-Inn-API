@@ -11,7 +11,8 @@ namespace AsyncInnAPI.Models
         [EnumDataType(typeof(Layout))]
         public Layout Layout { get; set; }
 
-        public IList<RoomAmenity> RoomAmenities { get; set; }
+        public ICollection<RoomAmenity> Amenities { get; set; }
+        public ICollection<HotelRoom> Rooms { get; set; }
     }
 
     public enum Layout

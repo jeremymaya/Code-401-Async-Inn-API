@@ -55,15 +55,17 @@ namespace AsyncInnAPI.Models.Services
         public async Task<Room> GetRoom(int id)
         {
             var room = await _context.Rooms.Where(x => x.Id == id)
-                                           .Include(x => x.RoomAmenities)
+                                           .Include(x => x.Amenities)
                                            .ThenInclude(x => x.Amenity)
+                                           .Include(x => x.Rooms)
+                                           .ThenInclude(x => x.Room)
                                            .FirstOrDefaultAsync();
             return room;
         }
 
         public async Task<List<Room>> GetRooms()
         {
-            var rooms = await _context.Rooms.Include(x => x.RoomAmenities)
+            var rooms = await _context.Rooms.Include(x => x.Amenities)
                                             .ThenInclude(x => x.Amenity)
                                             .ToListAsync();
             return rooms;

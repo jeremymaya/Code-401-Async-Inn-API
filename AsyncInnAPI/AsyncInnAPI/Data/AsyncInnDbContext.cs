@@ -13,6 +13,7 @@ namespace AsyncInnAPI.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RoomAmenity>().HasKey(ce => new { ce.RoomId, ce.AmenityId });
+            modelBuilder.Entity<HotelRoom>().HasKey(ce => new { ce.HotelId, ce.RoomNumber});
 
             modelBuilder.Entity<Hotel>().HasData(
                 new Hotel
@@ -134,5 +135,6 @@ namespace AsyncInnAPI.Data
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Amenity> Amenities { get; set; }
         public DbSet<RoomAmenity> RoomAmenities { get; set; }
+        public DbSet<HotelRoom> HotelRooms { get; set; }
     }
 }

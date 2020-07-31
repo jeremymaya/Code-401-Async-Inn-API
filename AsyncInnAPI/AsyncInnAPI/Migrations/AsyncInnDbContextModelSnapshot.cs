@@ -134,6 +134,30 @@ namespace AsyncInnAPI.Migrations
                         });
                 });
 
+            modelBuilder.Entity("AsyncInnAPI.Models.HotelRoom", b =>
+                {
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoomNumber")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("PetFriendly")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Rate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.HasKey("HotelId", "RoomNumber");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("HotelRooms");
+                });
+
             modelBuilder.Entity("AsyncInnAPI.Models.Room", b =>
                 {
                     b.Property<int>("Id")
@@ -205,16 +229,31 @@ namespace AsyncInnAPI.Migrations
                     b.ToTable("RoomAmenities");
                 });
 
+            modelBuilder.Entity("AsyncInnAPI.Models.HotelRoom", b =>
+                {
+                    b.HasOne("AsyncInnAPI.Models.Hotel", "Hotel")
+                        .WithMany("Rooms")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AsyncInnAPI.Models.Room", "Room")
+                        .WithMany("Rooms")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("AsyncInnAPI.Models.RoomAmenity", b =>
                 {
                     b.HasOne("AsyncInnAPI.Models.Amenity", "Amenity")
-                        .WithMany()
+                        .WithMany("Amenities")
                         .HasForeignKey("AmenityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AsyncInnAPI.Models.Room", "Room")
-                        .WithMany("RoomAmenities")
+                        .WithMany("Amenities")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
