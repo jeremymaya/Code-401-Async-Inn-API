@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AsyncInnAPI.Models;
 using AsyncInnAPI.Models.Interfaces;
+using AsyncInnAPI.Models.Dtos;
 
 namespace AsyncInnAPI.Controllers
 {
@@ -23,39 +24,39 @@ namespace AsyncInnAPI.Controllers
 
         // GET: api/Amenities
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Amenity>>> GetAmenities()
+        public async Task<ActionResult<IEnumerable<AmenityDto>>> GetAmenities()
         {
             return await _amenity.GetAmenities();
         }
 
         // GET: api/Amenities/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Amenity>> GetAmenity(int id)
+        public async Task<ActionResult<AmenityDto>> GetAmenity(int id)
         {
-            var amenity = await _amenity.GetAmenity(id);
+            var amenityDto = await _amenity.GetAmenity(id);
 
-            if (amenity == null)
+            if (amenityDto == null)
             {
                 return NotFound();
             }
 
-            return amenity;
+            return amenityDto;
         }
 
         // PUT: api/Amenities/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAmenity(int id, Amenity amenity)
+        public async Task<IActionResult> PutAmenity(int id, AmenityDto amenityDto)
         {
-            if (id != amenity.Id)
+            if (id != amenityDto.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                await _amenity.UpdateAmenity(amenity);
+                await _amenity.UpdateAmenity(amenityDto);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -76,26 +77,26 @@ namespace AsyncInnAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Amenity>> PostAmenity(Amenity amenity)
+        public async Task<ActionResult<AmenityDto>> PostAmenity(AmenityDto amenityDto)
         {
-            await _amenity.CreateAmenity(amenity);
+            await _amenity.CreateAmenity(amenityDto);
 
-            return CreatedAtAction("GetAmenity", new { id = amenity.Id }, amenity);
+            return CreatedAtAction("GetAmenity", new { id = amenityDto.Id }, amenityDto);
         }
 
         // DELETE: api/Amenities/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Amenity>> DeleteAmenity(int id)
+        public async Task<ActionResult<AmenityDto>> DeleteAmenity(int id)
         {
-            var amenity = await _amenity.GetAmenity(id);
-            if (amenity == null)
+            var amenityDto = await _amenity.GetAmenity(id);
+            if (amenityDto == null)
             {
                 return NotFound();
             }
 
             await _amenity.DeleteAmenity(id);
 
-            return amenity;
+            return amenityDto;
         }
 
         private bool AmenityExists(int id)

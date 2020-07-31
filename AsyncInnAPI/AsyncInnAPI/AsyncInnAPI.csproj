@@ -10,7 +10,7 @@
     <Folder Include="Controllers\" />
     <Folder Include="Models\Interfaces\" />
     <Folder Include="Models\Services\" />
-    <Folder Include="Models\DTOs\" />
+    <Folder Include="Models\Dtos\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
