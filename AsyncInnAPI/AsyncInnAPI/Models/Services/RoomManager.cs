@@ -40,7 +40,6 @@ namespace AsyncInnAPI.Models.Services
             Room room = new Room()
             {
                 Name = dto.Name,
-                // Credit: https://www.csharp-examples.net/string-to-enum/
                 Layout = (Layout)Enum.Parse(typeof(Layout), dto.Layout),
             };
 
@@ -80,7 +79,11 @@ namespace AsyncInnAPI.Models.Services
             };
 
             foreach (var amenity in room.Amenities)
-                dto.Amenities.Add(new AmenityDto() { Id = amenity.Amenity.Id, Name = amenity.Amenity.Name });
+                dto.Amenities.Add(new AmenityDto()
+                {
+                    Id = amenity.Amenity.Id,
+                    Name = amenity.Amenity.Name
+                });
 
             return dto;
         }
@@ -114,7 +117,7 @@ namespace AsyncInnAPI.Models.Services
             {
                 Id = dto.Id,
                 Name = dto.Name,
-                Layout = (Layout)Enum.Parse(typeof(Layout), dto.Layout),
+                Layout = (Layout)Enum.Parse(typeof(Layout), dto.Layout)
             };
 
             _context.Entry(room).State = EntityState.Modified;

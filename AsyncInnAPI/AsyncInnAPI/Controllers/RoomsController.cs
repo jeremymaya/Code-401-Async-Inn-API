@@ -122,6 +122,8 @@ namespace AsyncInnAPI.Controllers
 
             await _room.RemoveAmentityFromRoom(roomId, amenityId);
 
+            roomDto = await _room.GetRoom(roomId);
+
             return roomDto;
         }
 

@@ -57,7 +57,7 @@ namespace AsyncInnAPI.Migrations
                     HotelId = table.Column<int>(nullable: false),
                     RoomNumber = table.Column<int>(nullable: false),
                     RoomId = table.Column<int>(nullable: false),
-                    Rate = table.Column<decimal>(nullable: false),
+                    Rate = table.Column<decimal>(type: "money", nullable: false),
                     PetFriendly = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -136,6 +136,28 @@ namespace AsyncInnAPI.Migrations
                     { 4, 0, "Room Four" },
                     { 5, 1, "Room Five" },
                     { 6, 2, "Room Six" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "HotelRooms",
+                columns: new[] { "HotelId", "RoomNumber", "PetFriendly", "Rate", "RoomId" },
+                values: new object[,]
+                {
+                    { 1, 101, true, 150m, 1 },
+                    { 1, 201, false, 100m, 2 },
+                    { 2, 301, true, 50m, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "RoomAmenities",
+                columns: new[] { "RoomId", "AmenityId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 2, 3 },
+                    { 2, 4 },
+                    { 3, 5 }
                 });
 
             migrationBuilder.CreateIndex(

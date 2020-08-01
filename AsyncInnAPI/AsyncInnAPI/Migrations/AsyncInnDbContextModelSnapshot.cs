@@ -146,7 +146,7 @@ namespace AsyncInnAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Rate")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("money");
 
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
@@ -156,6 +156,32 @@ namespace AsyncInnAPI.Migrations
                     b.HasIndex("RoomId");
 
                     b.ToTable("HotelRooms");
+
+                    b.HasData(
+                        new
+                        {
+                            HotelId = 1,
+                            RoomNumber = 101,
+                            PetFriendly = true,
+                            Rate = 150m,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            HotelId = 1,
+                            RoomNumber = 201,
+                            PetFriendly = false,
+                            Rate = 100m,
+                            RoomId = 2
+                        },
+                        new
+                        {
+                            HotelId = 2,
+                            RoomNumber = 301,
+                            PetFriendly = true,
+                            Rate = 50m,
+                            RoomId = 3
+                        });
                 });
 
             modelBuilder.Entity("AsyncInnAPI.Models.Room", b =>
@@ -227,6 +253,33 @@ namespace AsyncInnAPI.Migrations
                     b.HasIndex("AmenityId");
 
                     b.ToTable("RoomAmenities");
+
+                    b.HasData(
+                        new
+                        {
+                            RoomId = 1,
+                            AmenityId = 1
+                        },
+                        new
+                        {
+                            RoomId = 1,
+                            AmenityId = 2
+                        },
+                        new
+                        {
+                            RoomId = 2,
+                            AmenityId = 3
+                        },
+                        new
+                        {
+                            RoomId = 2,
+                            AmenityId = 4
+                        },
+                        new
+                        {
+                            RoomId = 3,
+                            AmenityId = 5
+                        });
                 });
 
             modelBuilder.Entity("AsyncInnAPI.Models.HotelRoom", b =>

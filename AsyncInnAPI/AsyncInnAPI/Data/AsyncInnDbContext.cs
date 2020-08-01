@@ -129,6 +129,59 @@ namespace AsyncInnAPI.Data
                     Name = "Wine"
                 }
                 );
+            modelBuilder.Entity<RoomAmenity>().HasData(
+                new RoomAmenity
+                {
+                    RoomId = 1,
+                    AmenityId = 1
+                },
+                new RoomAmenity
+                {
+                    RoomId = 1,
+                    AmenityId = 2
+                },
+                new RoomAmenity
+                {
+                    RoomId = 2,
+                    AmenityId = 3
+                },
+                new RoomAmenity
+                {
+                    RoomId = 2,
+                    AmenityId = 4
+                },
+                new RoomAmenity
+                {
+                    RoomId = 3,
+                    AmenityId = 5
+                }
+                );
+            modelBuilder.Entity<HotelRoom>().HasData(
+                new HotelRoom
+                {
+                    HotelId = 1,
+                    RoomNumber = 101,
+                    RoomId = 1,
+                    Rate = 150,
+                    PetFriendly = true
+                },
+                new HotelRoom
+                {
+                    HotelId = 1,
+                    RoomNumber = 201,
+                    RoomId = 2,
+                    Rate = 100,
+                    PetFriendly = false
+                },
+                new HotelRoom
+                {
+                    HotelId = 2,
+                    RoomNumber = 301,
+                    RoomId = 3,
+                    Rate = 50,
+                    PetFriendly = true
+                }
+                );
         }
 
         public DbSet<Hotel> Hotels { get; set; }
