@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AsyncInnAPI.Models;
 using AsyncInnAPI.Models.Interfaces;
+using AsyncInnAPI.Models.Dtos;
 
 namespace AsyncInnAPI.Controllers
 {
@@ -23,39 +22,39 @@ namespace AsyncInnAPI.Controllers
 
         // GET: api/Rooms
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Room>>> GetRooms()
+        public async Task<ActionResult<IEnumerable<RoomDto>>> GetRooms()
         {
             return await _room.GetRooms();
         }
 
         // GET: api/Rooms/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Room>> GetRoom(int id)
+        public async Task<ActionResult<RoomDto>> GetRoom(int id)
         {
-            var room = await _room.GetRoom(id);
+            var roomDto = await _room.GetRoom(id);
 
-            if (room == null)
+            if (roomDto == null)
             {
                 return NotFound();
             }
 
-            return room;
+            return roomDto;
         }
 
         // PUT: api/Rooms/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRoom(int id, Room room)
+        public async Task<IActionResult> PutRoom(int id, RoomDto roomDto)
         {
-            if (id != room.Id)
+            if (id != roomDto.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                await _room.UpdateRoom(room);
+                await _room.UpdateRoom(roomDto);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -76,50 +75,54 @@ namespace AsyncInnAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Room>> PostRoom(Room room)
+        public async Task<ActionResult<RoomDto>> PostRoom(RoomDto roomDto)
         {
-            await _room.UpdateRoom(room);
+            await _room.UpdateRoom(roomDto);
 
-            return CreatedAtAction("GetRoom", new { id = room.Id }, room);
+            return CreatedAtAction("GetRoom", new { id = roomDto.Id }, roomDto);
         }
 
         // DELETE: api/Rooms/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Room>> DeleteRoom(int id)
+        public async Task<ActionResult<RoomDto>> DeleteRoom(int id)
         {
-            var room = await _room.GetRoom(id);
-            if (room == null)
+            var roomDto = await _room.GetRoom(id);
+            if (roomDto == null)
             {
                 return NotFound();
             }
 
             await _room.DeleteRoom(id);
 
-            return room;
+            return roomDto;
         }
 
+        // POST: api/Rooms/{roomId}/Amenity/{amenityId}
         [HttpPost]
         [Route("{roomId}/Amenity/{amenityId}")]
-        public async Task<ActionResult<Room>> AddAmenityToRoom(int roomId, int amenityId)
+        public async Task<ActionResult<RoomDto>> AddAmenityToRoom(int roomId, int amenityId)
         {
-            var room = await _room.AddAmenityToRoom(roomId, amenityId);
+            var roomDto = await _room.AddAmenityToRoom(roomId, amenityId);
 
-            return room;
+            return roomDto;
         }
 
+        // DELETE: api/Rooms/{roomId}/Amenity/{amenityId}
         [HttpDelete]
         [Route("{roomId}/Amenity/{amenityId}")]
-        public async Task<ActionResult<Room>> RemoveAmentityFromRoom(int roomId, int amenityId)
+        public async Task<ActionResult<RoomDto>> RemoveAmentityFromRoom(int roomId, int amenityId)
         {
-            var room = await _room.GetRoom(roomId);
-            if (room == null)
+            var roomDto = await _room.GetRoom(roomId);
+            if (roomDto == null)
             {
                 return NotFound();
             }
 
             await _room.RemoveAmentityFromRoom(roomId, amenityId);
 
-            return room;
+            roomDto = await _room.GetRoom(roomId);
+
+            return roomDto;
         }
 
         private bool RoomExists(int id)

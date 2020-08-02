@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AsyncInnAPI.Models.Dtos;
 
 namespace AsyncInnAPI.Models.Interfaces
 {
     public interface IHotelRoomManager
     {
-        Task<HotelRoom> CreateHotelRoom(HotelRoom hotelRoom);
+        Task<HotelRoomDto> CreateHotelRoom(HotelRoomDto dto);
         Task DeleteHotelRoom(int hotelId, int roomNumber);
-        Task<List<HotelRoom>> GetHotelRooms(int hotelId);
-        Task<HotelRoom> GetHotelRoom(int hotelId, int roomNumber);
-        Task UpdateHotelRoom(HotelRoom hotelRoom);
+        Task<List<HotelRoomDto>> GetHotelRooms(int hotelId);
+        Task<HotelRoomDto> GetHotelRoom(int hotelId, int roomNumber);
+        Task UpdateHotelRoom(HotelRoomDto dto);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AsyncInnAPI.Data;
+using AsyncInnAPI.Models.Dtos;
 using AsyncInnAPI.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,14 +11,16 @@ namespace AsyncInnAPI.Models.Services
 {
     public class RoomManager : IRoomManager
     {
-        private AsyncInnDbContext _context;
+        private readonly AsyncInnDbContext _context;
+        private readonly IAmenityManager _amenities;
 
-        public RoomManager(AsyncInnDbContext context)
+        public RoomManager(AsyncInnDbContext context, IAmenityManager amenities)
         {
             _context = context;
+            _amenities = amenities;
         }
 
-        public async Task<Room> AddAmenityToRoom(int roomId, int amenityId)
+        public async Task<RoomDto> AddAmenityToRoom(int roomId, int amenityId)
         {
             RoomAmenity roomAmenity = new RoomAmenity()
             {
@@ -29,18 +32,26 @@ namespace AsyncInnAPI.Models.Services
 
             await _context.SaveChangesAsync();
 
-            var room = await GetRoom(roomId);
+            var dto = await GetRoom(roomId);
 
-            return room;
+            return dto;
         }
 
-        public async Task<Room> CreateRoom(Room room)
+        public async Task<RoomDto> CreateRoom(RoomDto dto)
         {
+            Room room = new Room()
+            {
+                Name = dto.Name,
+                Layout = (Layout)Enum.Parse(typeof(Layout), dto.Layout),
+            };
+
             _context.Entry(room).State = EntityState.Added;
 
             await _context.SaveChangesAsync();
 
-            return room;
+            dto.Id = room.Id;
+
+            return dto;
         }
 
         public async Task DeleteRoom(int id)
@@ -52,7 +63,7 @@ namespace AsyncInnAPI.Models.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Room> GetRoom(int id)
+        public async Task<RoomDto> GetRoom(int id)
         {
             var room = await _context.Rooms.Where(x => x.Id == id)
                                            .Include(x => x.Amenities)
@@ -60,15 +71,30 @@ namespace AsyncInnAPI.Models.Services
                                            .Include(x => x.Rooms)
                                            .ThenInclude(x => x.Room)
                                            .FirstOrDefaultAsync();
-            return room;
+
+            RoomDto dto = new RoomDto()
+            {
+                Id = room.Id,
+                Name = room.Name,
+                Layout = room.Layout.ToString(),
+                Amenities = await _amenities.GetAmenities()
+            };
+
+            return dto;
         }
 
-        public async Task<List<Room>> GetRooms()
+        public async Task<List<RoomDto>> GetRooms()
         {
             var rooms = await _context.Rooms.Include(x => x.Amenities)
                                             .ThenInclude(x => x.Amenity)
                                             .ToListAsync();
-            return rooms;
+
+            List<RoomDto> dtos = new List<RoomDto>();
+
+            foreach (var room in rooms)
+                dtos.Add(await GetRoom(room.Id));
+
+            return dtos;
         }
 
         public async Task RemoveAmentityFromRoom(int roomId, int amenityId)
@@ -80,8 +106,13 @@ namespace AsyncInnAPI.Models.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateRoom(Room room)
+        public async Task UpdateRoom(RoomDto dto)
         {
+            var room = await _context.Rooms.FindAsync(dto.Id);
+
+            room.Name = dto.Name;
+            room.Layout = (Layout)Enum.Parse(typeof(Layout), dto.Layout);
+
             _context.Entry(room).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();

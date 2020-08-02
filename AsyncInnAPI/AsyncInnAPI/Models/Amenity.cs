@@ -8,6 +8,6 @@ namespace AsyncInnAPI.Models
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<RoomAmenity> Amenities { get; set; }
+        public IList<RoomAmenity> Amenities { get; set; }
     }
 }
