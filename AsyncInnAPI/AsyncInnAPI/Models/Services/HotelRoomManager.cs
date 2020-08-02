@@ -11,11 +11,13 @@ namespace AsyncInnAPI.Models.Services
 {
     public class HotelRoomManager : IHotelRoomManager
     {
-        private AsyncInnDbContext _context;
+        private readonly AsyncInnDbContext _context;
+        private readonly IRoomManager _rooms;
 
-        public HotelRoomManager(AsyncInnDbContext context)
+        public HotelRoomManager(AsyncInnDbContext context, IRoomManager rooms)
         {
             _context = context;
+            _rooms = rooms;
         }
 
         public async Task<HotelRoomDto> CreateHotelRoom(HotelRoomDto dto)
@@ -64,23 +66,8 @@ namespace AsyncInnAPI.Models.Services
                 Rate = hotelRoom.Rate,
                 PetFriendly = hotelRoom.PetFriendly,
                 RoomId = hotelRoom.RoomId,
-                Room = new RoomDto()
+                Room = await _rooms.GetRoom(hotelRoom.RoomId)
             };
-
-            if (hotelRoom.Room != null)
-            {
-                dto.Room.Id = hotelRoom.Room.Id;
-                dto.Room.Name = hotelRoom.Room.Name;
-                dto.Room.Layout = hotelRoom.Room.Layout.ToString();
-                dto.Room.Amenities = new List<AmenityDto>();
-
-                foreach (var amenity in hotelRoom.Room.Amenities)
-                    dto.Room.Amenities.Add(new AmenityDto()
-                    {
-                        Id = amenity.Amenity.Id,
-                        Name = amenity.Amenity.Name
-                    });
-            }
 
             return dto;
         }
@@ -102,14 +89,15 @@ namespace AsyncInnAPI.Models.Services
 
         public async Task UpdateHotelRoom(HotelRoomDto dto)
         {
-            HotelRoom hotelRoom = new HotelRoom()
-            {
-                HotelId = dto.HotelId,
-                RoomNumber = dto.RoomNumber,
-                RoomId = dto.RoomId,
-                Rate = dto.Rate,
-                PetFriendly = dto.PetFriendly,
-            };
+            var hotelRoom = await _context.HotelRooms.Where(x => x.HotelId == dto.HotelId && x.RoomNumber == dto.RoomNumber)
+                                         .Include(x => x.Room)
+                                         .ThenInclude(x => x.Amenities)
+                                         .ThenInclude(x => x.Amenity)
+                                         .FirstOrDefaultAsync();
+
+            hotelRoom.RoomId = dto.RoomId;
+            hotelRoom.Rate = dto.Rate;
+            hotelRoom.PetFriendly = dto.PetFriendly;
 
             _context.Entry(hotelRoom).State = EntityState.Modified;
 

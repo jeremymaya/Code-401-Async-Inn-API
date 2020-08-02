@@ -11,11 +11,13 @@ namespace AsyncInnAPI.Models.Services
 {
     public class RoomManager : IRoomManager
     {
-        private AsyncInnDbContext _context;
+        private readonly AsyncInnDbContext _context;
+        private readonly IAmenityManager _amenities;
 
-        public RoomManager(AsyncInnDbContext context)
+        public RoomManager(AsyncInnDbContext context, IAmenityManager amenities)
         {
             _context = context;
+            _amenities = amenities;
         }
 
         public async Task<RoomDto> AddAmenityToRoom(int roomId, int amenityId)
@@ -75,15 +77,8 @@ namespace AsyncInnAPI.Models.Services
                 Id = room.Id,
                 Name = room.Name,
                 Layout = room.Layout.ToString(),
-                Amenities = new List<AmenityDto>()
+                Amenities = await _amenities.GetAmenities()
             };
-
-            foreach (var amenity in room.Amenities)
-                dto.Amenities.Add(new AmenityDto()
-                {
-                    Id = amenity.Amenity.Id,
-                    Name = amenity.Amenity.Name
-                });
 
             return dto;
         }
@@ -113,12 +108,10 @@ namespace AsyncInnAPI.Models.Services
 
         public async Task UpdateRoom(RoomDto dto)
         {
-            Room room = new Room()
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                Layout = (Layout)Enum.Parse(typeof(Layout), dto.Layout)
-            };
+            var room = await _context.Rooms.FindAsync(dto.Id);
+
+            room.Name = dto.Name;
+            room.Layout = (Layout)Enum.Parse(typeof(Layout), dto.Layout);
 
             _context.Entry(room).State = EntityState.Modified;
 

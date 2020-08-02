@@ -11,11 +11,13 @@ namespace AsyncInnAPI.Models.Services
 {
     public class HotelManager : IHotelManager
     {
-        private AsyncInnDbContext _context;
+        private readonly AsyncInnDbContext _context;
+        private readonly IHotelRoomManager _hotelRooms;
 
-        public HotelManager(AsyncInnDbContext context)
+        public HotelManager(AsyncInnDbContext context, IHotelRoomManager hotelRooms)
         {
             _context = context;
+            _hotelRooms = hotelRooms;
         }
 
         public async Task<HotelDto> CreateHotel(HotelDto dto)
@@ -65,38 +67,8 @@ namespace AsyncInnAPI.Models.Services
                 City = hotel.City,
                 State = hotel.State,
                 Phone = hotel.Phone,
-                Rooms = new List<HotelRoomDto>()
+                Rooms = await _hotelRooms.GetHotelRooms(hotel.Id)
             };
-
-            foreach (var hotelRoom in hotel.Rooms)
-            {
-                HotelRoomDto hotelRoomDto = new HotelRoomDto()
-                {
-                    HotelId = hotelRoom.HotelId,
-                    RoomNumber = hotelRoom.RoomNumber,
-                    Rate = hotelRoom.Rate,
-                    PetFriendly = hotelRoom.PetFriendly,
-                    RoomId = hotelRoom.RoomId,
-                    Room = new RoomDto()
-                };
-
-                if (hotelRoom.Room != null)
-                {
-                    hotelRoomDto.Room.Id = hotelRoom.Room.Id;
-                    hotelRoomDto.Room.Name = hotelRoom.Room.Name;
-                    hotelRoomDto.Room.Layout = hotelRoom.Room.Layout.ToString();
-                    hotelRoomDto.Room.Amenities = new List<AmenityDto>();
-
-                    foreach (var amenity in hotelRoom.Room.Amenities)
-                        hotelRoomDto.Room.Amenities.Add(new AmenityDto()
-                        {
-                            Id = amenity.Amenity.Id,
-                            Name = amenity.Amenity.Name
-                        });
-                }
-
-                dto.Rooms.Add(hotelRoomDto);
-            }
 
             return dto;
         }
@@ -117,14 +89,18 @@ namespace AsyncInnAPI.Models.Services
 
         public async Task UpdateHotel(HotelDto dto)
         {
-            Hotel hotel = new Hotel()
-            {
-                Name = dto.Name,
-                StreetAddress = dto.StreetAddress,
-                City = dto.City,
-                State = dto.State,
-                Phone = dto.Phone
-            };
+            var hotel = await _context.Hotels.Where(x => x.Id == dto.Id)
+                                 .Include(x => x.Rooms)
+                                 .ThenInclude(x => x.Room)
+                                 .ThenInclude(x => x.Amenities)
+                                 .ThenInclude(x => x.Amenity)
+                                 .FirstOrDefaultAsync();
+
+            hotel.Name = dto.Name;
+            hotel.StreetAddress = dto.StreetAddress;
+            hotel.City = dto.City;
+            hotel.State = dto.State;
+            hotel.Phone = dto.Phone;
 
             _context.Entry(hotel).State = EntityState.Modified;
 

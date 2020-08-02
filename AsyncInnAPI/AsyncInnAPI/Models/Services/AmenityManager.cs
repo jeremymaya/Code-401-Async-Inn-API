@@ -10,7 +10,7 @@ namespace AsyncInnAPI.Models.Services
 {
     public class AmenityManager : IAmenityManager
     {
-        private AsyncInnDbContext _context;
+        private readonly AsyncInnDbContext _context;
 
         public AmenityManager(AsyncInnDbContext context)
         {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AsyncInnAPI.Models;
 using AsyncInnAPI.Models.Dtos;
 using AsyncInnAPI.Models.Interfaces;
 using Microsoft.AspNetCore.Mvc;
