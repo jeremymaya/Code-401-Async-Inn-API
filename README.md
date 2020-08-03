@@ -1,5 +1,7 @@
 # Code-401-Async-Inn-API
 
+![Actions Status](https://github.com/jeremymaya/Code-401-Async-Inn-API/workflows/build/badge.svg)
+
 ## Async Inn API
 
 Lab 12 - Intro to Entity Framework Core and APIs
