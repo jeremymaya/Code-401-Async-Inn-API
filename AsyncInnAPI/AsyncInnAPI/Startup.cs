@@ -20,10 +20,14 @@ namespace AsyncInnAPI
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        public IHostEnvironment Environment { get; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IHostEnvironment environment)
         {
-            Configuration = configuration;
+            Environment = environment;
+            var builder = new ConfigurationBuilder().AddEnvironmentVariables();
+            builder.AddUserSecrets<Startup>();
+            Configuration = builder.Build();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -33,15 +37,23 @@ namespace AsyncInnAPI
             // Enables the use of MVC controllers
             services.AddMvc();
 
-            services.AddDbContext<AsyncInnDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+            string applicationUserDbContextConnectionString = Environment.IsDevelopment()
+                ? Configuration["ConnectionStrings:ApplicationUserDbContextDevelopmentConnection"]
+                : Configuration["ConnectionStrings:ApplicationUserDbContextProductionConnection"];
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(applicationUserDbContextConnectionString));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<AsyncInnDbContext>()
                     .AddDefaultTokenProviders();
 
-            services.AddControllers().AddNewtonsoftJson(options =>
-                        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                        );
+            string asyncInnDbContextConnectionString = Environment.IsDevelopment()
+                ? Configuration["ConnectionStrings:AsyncInnDbContextDevelopmentConnection"]
+                : Configuration["ConnectionStrings:AsyncInnDbContextProductionConnection"];
+
+            services.AddDbContext<AsyncInnDbContext>(options => options.UseSqlServer(asyncInnDbContextConnectionString));
 
             services.AddTransient<IHotelManager, HotelManager>();
 
