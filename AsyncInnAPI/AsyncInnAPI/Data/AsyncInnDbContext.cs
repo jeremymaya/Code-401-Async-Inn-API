@@ -1,10 +1,11 @@
 ﻿using System;
 using AsyncInnAPI.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AsyncInnAPI.Data
 {
-    public class AsyncInnDbContext : DbContext
+    public class AsyncInnDbContext : IdentityDbContext<ApplicationUser>
     {
         public AsyncInnDbContext(DbContextOptions<AsyncInnDbContext> options) : base(options)
         {
@@ -12,6 +13,7 @@ namespace AsyncInnAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<RoomAmenity>().HasKey(ce => new { ce.RoomId, ce.AmenityId });
             modelBuilder.Entity<HotelRoom>().HasKey(ce => new { ce.HotelId, ce.RoomNumber});
 
