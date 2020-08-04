@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AsyncInnAPI.Models;
 using AsyncInnAPI.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AsyncInnAPI.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -30,9 +32,16 @@ namespace AsyncInnAPI.Controllers
             _configuration = configuration;
         }
 
-        // POST: api/Account/Register/Agent
+        /// <summary>
+        /// Registers an agent
+        /// </summary>
+        /// <param name="register">A data transfer object containing registeration information</param>
+        /// <returns>Response code with a message</returns>
         [Authorize(Policy = "PropertyManagerPrivilege")]
         [HttpPost, Route("Register/Agent")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RegisterAgent(RegisterDto register)
         {
             ApplicationUser user = new ApplicationUser()
@@ -57,9 +66,16 @@ namespace AsyncInnAPI.Controllers
             return BadRequest("Invalid Registeration");
         }
 
-        // POST: api/Account/Register/PropertyManager
+        /// <summary>
+        /// Registers a property manager
+        /// </summary>
+        /// <param name="register">A data transfer object containing registeration information</param>
+        /// <returns>Response code with a message</returns>
         [Authorize(Policy = "DistrictManagerPrivilege")]
         [HttpPost, Route("Register/PropertyManager")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RegisterPropertyManager(RegisterDto register)
         {
             ApplicationUser user = new ApplicationUser()
@@ -84,9 +100,16 @@ namespace AsyncInnAPI.Controllers
             return BadRequest("Invalid Registeration");
         }
 
-        // POST: api/Account/Register/DistrictManager
+        /// <summary>
+        /// Registers a district manager
+        /// </summary>
+        /// <param name="register">A data transfer object containing registeration information</param>
+        /// <returns>Response code with a message</returns>
         [Authorize(Policy = "DistrictManagerPrivilege")]
         [HttpPost, Route("Register/DistrictManager")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RegisterDistrictManager(RegisterDto register)
         {
             ApplicationUser user = new ApplicationUser()
@@ -111,9 +134,16 @@ namespace AsyncInnAPI.Controllers
             return BadRequest("Invalid Registeration");
         }
 
-        // POST: api/Account/Assign/Role
+        /// <summary>
+        /// Assigns a role to a user
+        /// </summary>
+        /// <param name="assignment">A data transfer object containing registeration information</param>
+        /// <returns>Response code with a message</returns>
         [Authorize(Policy = "DistrictManagerPrivilege")]
         [HttpPost, Route("Assign/Role")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> AssignRoleToUser(AssignRoleDto assignment)
         {
             var user = await _userManager.FindByEmailAsync(assignment.Email);
@@ -126,9 +156,15 @@ namespace AsyncInnAPI.Controllers
             return BadRequest("Invalid Role Assignment");
         }
 
-        // POST: api/Account/Login
+        /// <summary>
+        /// Logins a user
+        /// </summary>
+        /// <param name="login">A data transfer object containing login information</param>
+        /// <returns>Response code with a JWT token</returns>
         [AllowAnonymous]
         [HttpPost, Route("Login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login(LoginDto login)
         {
             var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, false, false);

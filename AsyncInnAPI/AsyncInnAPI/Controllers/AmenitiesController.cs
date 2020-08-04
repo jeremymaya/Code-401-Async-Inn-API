@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using AsyncInnAPI.Models.Interfaces;
 using AsyncInnAPI.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace AsyncInnAPI.Controllers
 {
+    [Produces("application/json")]
     [Authorize(Policy = "DistrictManagerPrivilege")]
     [Route("api/[controller]")]
     [ApiController]
@@ -22,15 +24,26 @@ namespace AsyncInnAPI.Controllers
             _amenity = amenity;
         }
 
-        // GET: api/Amenities
+        /// <summary>
+        /// Gets a list of amenities
+        /// </summary>
+        /// <returns>A list of data transfer object containing amenity information</returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<AmenityDto>>> GetAmenities()
         {
             return await _amenity.GetAmenities();
         }
 
-        // GET: api/Amenities/5
+        /// <summary>
+        /// Gets an amenity
+        /// </summary>
+        /// <param name="id">Amenity Id</param>
+        /// <returns>A data transfer object containing amenity infromation</returns>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<AmenityDto>> GetAmenity(int id)
         {
             var amenityDto = await _amenity.GetAmenity(id);
@@ -43,10 +56,17 @@ namespace AsyncInnAPI.Controllers
             return amenityDto;
         }
 
-        // PUT: api/Amenities/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// Updates an amenity details
+        /// </summary>
+        /// <param name="id">Amenity Id</param>
+        /// <param name="amenityDto">A data transfer object containing amenity infromation</param>
+        /// <returns>A response code</returns>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutAmenity(int id, AmenityDto amenityDto)
         {
             if (id != amenityDto.Id)
@@ -73,10 +93,15 @@ namespace AsyncInnAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Amenities
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// Creates an amenity
+        /// </summary>
+        /// <param name="amenityDto">A data transfer object containing amenity infromation</param>
+        /// <returns>A data transfer object containing newly created amenity information</returns>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<AmenityDto>> PostAmenity(AmenityDto amenityDto)
         {
             await _amenity.CreateAmenity(amenityDto);
@@ -85,7 +110,15 @@ namespace AsyncInnAPI.Controllers
         }
 
         // DELETE: api/Amenities/5
+        /// <summary>
+        /// Deletes an amenity
+        /// </summary>
+        /// <param name="id">Amenity Id</param>
+        /// <returns>A data transfer object containing deleted amenity information</returns>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<AmenityDto>> DeleteAmenity(int id)
         {
             var amenityDto = await _amenity.GetAmenity(id);

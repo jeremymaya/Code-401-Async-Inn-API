@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using AsyncInnAPI.Data;
 using AsyncInnAPI.Models;
 using AsyncInnAPI.Models.Interfaces;
@@ -10,13 +9,13 @@ using AsyncInnAPI.Models.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 namespace AsyncInnAPI
 {
@@ -93,6 +92,31 @@ namespace AsyncInnAPI
             services.AddTransient<IAmenityManager, AmenityManager>();
 
             services.AddTransient<IHotelRoomManager, HotelRoomManager>();
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen();
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Async Inn API",
+                    Description = "A simple ASP.NET Core Web API for Async Inn Hotel Management",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Kyungrae Kim",
+                        Email = string.Empty,
+                        Url = new Uri("http://linkedin.com/in/kyungrae-kim/"),
+                    }
+                });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -113,6 +137,16 @@ namespace AsyncInnAPI
 
             RoleInitializer.SeedData(serviceProvider, userManager, Configuration);
 
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Async Inn API V1");
+                c.RoutePrefix = string.Empty;
+            });
 
             // Sets the default routing for incoming requests within the API application
             // By default, the convention is {site}/[controller]/[action]/[id]
