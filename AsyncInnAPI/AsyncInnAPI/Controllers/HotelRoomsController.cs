@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AsyncInnAPI.Models.Dtos;
 using AsyncInnAPI.Models.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,7 @@ namespace AsyncInnAPI.Controllers
         }
 
         // GET: api/Hotels/{hotelId}/Rooms
+        [Authorize(Policy = "AgentPrivilege")]
         [HttpGet]
         [Route("{hotelId}/Rooms")]
         public async Task<ActionResult<IEnumerable<HotelRoomDto>>> GetHotelRooms(int hotelId)
@@ -29,6 +31,7 @@ namespace AsyncInnAPI.Controllers
         }
 
         // GET: api/Hotels/{hotelId}/Rooms/{roomNumber}
+        [Authorize(Policy = "AgentPrivilege")]
         [HttpGet]
         [Route("{hotelId}/Rooms/{roomNumber}")]
         public async Task<ActionResult<HotelRoomDto>> GetHotelRoom(int hotelId, int roomNumber)
@@ -46,6 +49,7 @@ namespace AsyncInnAPI.Controllers
         // PUT: api/Hotels/{hotelId}/Rooms/{roomNumber}
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [Authorize(Policy = "AgentPrivilege")]
         [HttpPut]
         [Route("{hotelId}/Rooms/{roomNumber}")]
         public async Task<IActionResult> PutHotelRoom(int hotelId, HotelRoomDto hotelRoomDto)
@@ -77,6 +81,7 @@ namespace AsyncInnAPI.Controllers
         // POST: api/Hotels/{hotelId}/Rooms
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [Authorize(Policy = "PropertyManagerPrivilege")]
         [HttpPost]
         [Route("{hotelId}/Rooms")]
         public async Task<ActionResult<HotelRoomDto>> PostHotelRoom(int hotelId, HotelRoomDto hotelRoomDto)
@@ -87,6 +92,7 @@ namespace AsyncInnAPI.Controllers
         }
 
         // DELETE: api/Hotels/{hotelId}/Rooms/{roomNumber}
+        [Authorize(Policy = "PropertyManagerPrivilege")]
         [HttpDelete]
         [Route("{hotelId}/Rooms/{roomNumber}")]
         public async Task<ActionResult<HotelRoomDto>> DeleteHotelRoom(int hotelId, int roomNumber)

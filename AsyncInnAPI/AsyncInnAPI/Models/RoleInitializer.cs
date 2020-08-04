@@ -35,27 +35,27 @@ namespace AsyncInnAPI.Models
             }
         };
 
-        public static void SeedData(IServiceProvider serviceProvider, UserManager<ApplicationUser> users, IConfiguration _config)
+        public static void SeedData(IServiceProvider serviceProvider, UserManager<ApplicationUser> users, IConfiguration _configuration)
         {
             using var dbContext = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
             dbContext.Database.EnsureCreated();
             AddRoles(dbContext);
-            SeedUsers(users, _config);
+            SeedUsersAsync(users, _configuration);
         }
 
-        private static void SeedUsers(UserManager<ApplicationUser> userManager, IConfiguration _config)
+        private static void SeedUsersAsync(UserManager<ApplicationUser> userManager, IConfiguration _configuration)
         {
-            if (userManager.FindByEmailAsync(_config["DistrictManagerEmail"]).Result == null)
+            if (userManager.FindByEmailAsync(_configuration["DistrictManagerEmail"]).Result == null)
             {
                 ApplicationUser user = new ApplicationUser
                 {
-                    UserName = _config["DistrictManagerEmail"],
-                    Email = _config["DistrictManagerEmail"],
-                    FirstName = "District",
+                    UserName = _configuration["DistrictManagerEmail"],
+                    Email = _configuration["DistrictManagerEmail"],
+                    FirstName = "Default",
                     LastName = "Manager"
                 };
 
-                IdentityResult result = userManager.CreateAsync(user, _config["DistrictManagerPassword"]).Result;
+                IdentityResult result = userManager.CreateAsync(user, _configuration["DistrictManagerPassword"]).Result;
 
                 if (result.Succeeded)
                     userManager.AddToRoleAsync(user, ApplicationRoles.DistrictManager).Wait();

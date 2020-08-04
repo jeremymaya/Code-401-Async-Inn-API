@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AsyncInnAPI.Models.Interfaces;
 using AsyncInnAPI.Models.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AsyncInnAPI.Controllers
 {
+    [Authorize(Policy = "DistrictManagerPrivilege")]
     [Route("api/[controller]")]
     [ApiController]
     public class AmenitiesController : ControllerBase
