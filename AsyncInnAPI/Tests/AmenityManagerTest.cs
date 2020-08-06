@@ -22,7 +22,7 @@ namespace Tests
 
             AmenityManager service = new AmenityManager(context);
 
-            AmenityDto dto = new AmenityDto() { Name = "Test" };
+            var dto = new AmenityDto() { Name = "Test" };
 
             Assert.Equal(0, context.Amenities.CountAsync().Result);
 
@@ -47,6 +47,8 @@ namespace Tests
 
             AmenityManager service = new AmenityManager(context);
 
+            Assert.Equal(0, context.Amenities.CountAsync().Result);
+
             var resultOne = await service.CreateAmenity(new AmenityDto() { Name = "Test One" });
             var resultTwo = await service.CreateAmenity(new AmenityDto() { Name = "Test Two" });
 
@@ -60,24 +62,6 @@ namespace Tests
             Assert.IsType<Amenity>(actualTwo);
             Assert.Equal(2, actualTwo.Id);
             Assert.Equal("Test Two", actualTwo.Name);
-        }
-
-        [Fact]
-        public async void CreateAmenityReturnsAmenityDtoWithId()
-        {
-            DbContextOptions<AsyncInnDbContext> options = new DbContextOptionsBuilder<AsyncInnDbContext>()
-                .UseInMemoryDatabase("CreateAmenityReturnsAmenityDtoWithId")
-                .Options;
-
-            using AsyncInnDbContext context = new AsyncInnDbContext(options);
-
-            AmenityManager service = new AmenityManager(context);
-
-            var actual = await service.CreateAmenity(new AmenityDto() { Name = "Test" });
-
-            Assert.IsType<AmenityDto>(actual);
-            Assert.Equal(1, actual.Id);
-            Assert.Equal("Test", actual.Name);
         }
 
         [Fact]
@@ -163,6 +147,8 @@ namespace Tests
             using AsyncInnDbContext context = new AsyncInnDbContext(options);
 
             AmenityManager service = new AmenityManager(context);
+
+            Assert.Equal(0, await context.Amenities.CountAsync());
 
             _ = await service.CreateAmenity(new AmenityDto() { Name = "Test" });
 
