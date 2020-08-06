@@ -48,6 +48,8 @@ Then select and open ```AsyncInnAPI.sln```
 
 ![Entity Relationship Diagram](Assets/ERD.png)
 
+Diagram Credit: [Amanda Iverson](https://github.com/Aiverson1011)
+
 * Hotel table has one to many relationship with HotelRoom table
 * Room table has one to many relationship with HotelRoom table
 * Amenities table has one to many relationship with RoomAmenities table
@@ -55,77 +57,170 @@ Then select and open ```AsyncInnAPI.sln```
 * RoomAmenities table is a pure join table
 * Layout is an enum
 
-Diagram Credit: [Amanda Iverson](https://github.com/Aiverson1011)
+## Features
 
-## Dependency Injection
+* RESTful API
+* Entity Framework Core
+* Dependency Injection
+* Data Transfer Objects
+* Idenity
+* Authorization
+* JSON Web Token (JWT)
 
-Update your README to contain information about your architecture. Add a section that, in your own words, discusses what the architecture pattern is and how it is used in the app.
-
-## Idenity
-
-Update your README with description of what identity is.
+----
 
 ## Endpoints
 
-### GET ```hotels```
+### Account
 
-Gets the surf conditions for a specific beach ID.
+| Method | EndPoint | Description |
+|:-|:-|:-|
+| POST | ```/api/Account/Register``` | |
+| POST | ```/api/Account/Assign/Role``` | |
+| POST | ```/api/Account/Login``` | |
 
-#### Parameters
+ ```json
+Sample Request Body of POST /api/Account/Register
 
-| Path parameter | Description |
-|:-|:-|
-| ```{hotelId}``` | The value for the hotel you want to look up. Database has been seeded with 5 hotels |
-
-Sample request
-
-```bash
-curl -I -X GET "https://api.openweathermap.org/data/2.5/surfreport?zip=95050&appid=APIKEY&units=imperial&days=2"
-```
-
-#### Sample response
-
-The following is a sample response from the ```hotels/{hotelId}``` endpoint:
-
-```json
 {
-    "surfreport": [
-        {
-            "beach": "Santa Cruz",
-            "monday": {
-                "1pm": {
-                    "tide": 5,
-                    "wind": 15,
-                    "watertemp": 80,
-                    "surfheight": 5,
-                    "recommendation": "Go surfing!"
-                },
-                "2pm": {
-                    "tide": -1,
-                    "wind": 1,
-                    "watertemp": 50,
-                    "surfheight": 3,
-                    "recommendation": "Surfing conditions are okay, not great."
-                },
-                "3pm": {
-                    "tide": -1,
-                    "wind": 10,
-                    "watertemp": 65,
-                    "surfheight": 1,
-                    "recommendation": "Not a good day for surfing."
-                }
-                ...
-            }
-        }
-    ]
+    "email": "user@example.com",
+    "password": "string",
+    "firstName": "string",
+    "lastName": "string",
+    "role": "string"
 }
 ```
 
-#### Response definitions
+### Amenities
 
-| Response item | Description | Data type |
+| Method | EndPoint | Description |
 |:-|:-|:-|
-| hotel | The beach you selected based on the beach ID in the request. The beach name is the official name as described in the National Park Service Geodatabase. | String |
+| GET | ```/api/Amenities``` | |
+| POST | ```/api/Amenities``` | |
+| GET | ```/api/Amenities/{id}``` | |
+| PUT | ```/api/Amenities/{id}``` | |
+| DELTE | ```/api/Amenities/{id}``` | |
+
+```json
+Sample Response of GET /api/Amenities
+
+[
+    {
+        "id": 0,
+        "name": "string"
+    }
+]
+```
+
+### HotelRooms
+
+| Method | EndPoint | Description |
+|:-|:-|:-|
+| GET | ```/api/Hotels/{hotelId}/Rooms``` | |
+| POST | ```/api/Hotels/{hotelId}/Rooms``` | |
+| GET | ```/api/Hotels/{hotelId}/Rooms/{roomNumber}``` | |
+| PUT | ```/api/Hotels/{hotelId}/Rooms/{roomNumber}``` | |
+| DELTE | ```/api/Hotels/{hotelId}/Rooms/{roomNumber}``` | |
+
+```json
+Sample Response of GET /api/Hotels/{hotelId}/Rooms
+
+[
+    {
+        "hotelId": 0,
+        "roomNumber": 0,
+        "rate": 0,
+        "petFriendly": true,
+        "roomId": 0,
+        "room": {
+            "id": 0,
+            "name": "string",
+            "layout": "string",
+            "amenities": [
+                {
+                    "id": 0,
+                    "name": "string"
+                }
+            ]
+        }
+    }
+]
+```
+
+### Hotels
+
+| Method | EndPoint | Description |
+|:-|:-|:-|
+| GET | ```/api/Hotels``` | |
+| POST | ```/api/Hotels``` |
+| GET | ```/api/Hotels/{id}``` |
+| PUT | ```/api/Hotels/{id}``` |
+| DELTE | ```/api/Hotels/{id}``` |
+
+```json
+Sample Response of GET /api/Hotels
+
+[
+    {
+        "id": 0,
+        "name": "string",
+        "streetAddress": "string",
+        "city": "string",
+        "state": "string",
+        "phone": "string",
+        "rooms": [
+            {
+                "hotelId": 0,
+                "roomNumber": 0,
+                "rate": 0,
+                "petFriendly": true,
+                "roomId": 0,
+                "room": {
+                    "id": 0,
+                    "name": "string",
+                    "layout": "string",
+                    "amenities": [
+                        {
+                            "id": 0,
+                            "name": "string"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]
+```
+
+### Rooms
+
+| Method | EndPoint | Description |
+|:-|:-|:-|
+| GET | ```/api/Rooms/``` | |
+| POST | ```/api/Rooms/``` | |
+| GET | ```/api/Rooms/{id}``` | |
+| PUT | ```/api/Rooms/{id}``` | |
+| DELETE | ```/api/Rooms/{id}``` | |
+| POST | ```/api/Rooms/{roomId}/Amenity/{amenityId}``` | |
+| DELTE | ```/api/Rooms/{roomId}/Amenity/{amenityId}``` | |
+
+```json
+Sample Response of GET /api/Rooms
+
+[
+    {
+        "id": 0,
+        "name": "string",
+        "layout": "string",
+        "amenities": [
+            {
+                "id": 0,
+                "name": "string"
+            }
+        ]
+    }
+]
+```
 
 ----
 
@@ -139,4 +234,9 @@ The following is a sample response from the ```hotels/{hotelId}``` endpoint:
 
 ## Change Log
 
-1.0: *Lab 12 Completed* - 29 Jul 2020
+* 1.6: *Lab 18 Completed* - 5 Aug 2020
+* 1.5: *Lab 17 Completed* - 3 Aug 2020
+* 1.4: *Lab 16 Completed* - 2 Aug 2020
+* 1.3: *Lab 14 Completed* - 30 Jul 2020
+* 1.2: *Lab 13 Completed* - 30 Jul 2020
+* 1.1: *Lab 12 Completed* - 29 Jul 2020
