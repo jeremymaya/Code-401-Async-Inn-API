@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,10 +37,10 @@ namespace AsyncInnAPI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            // Enables the use of MVC controllers
-            services.AddMvc();
-
-            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            // Enable AuthorizeFilter across the application
+            // Enable the use of controllers within the MVC convention
+            services.AddControllers(options => { options.Filters.Add(new AuthorizeFilter()); })
+                    .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             string applicationUserDbContextConnectionString = Environment.IsDevelopment()
                 ? Configuration["ConnectionStrings:ApplicationUserDbContextDevelopmentConnection"]
@@ -47,10 +48,13 @@ namespace AsyncInnAPI
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(applicationUserDbContextConnectionString));
 
+            // Enable Identity based on ApplicationUsr and IdentityRole
             services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
 
+            // Enable Authentication with JWT
+            // Define JWT Beaere defaults and parameters
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -69,6 +73,7 @@ namespace AsyncInnAPI
                 };
             });
 
+            // Enable Authoriziation by adding custom policies
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("DistrictManagerPrivilege", policy => policy.RequireRole(ApplicationRoles.DistrictManager));

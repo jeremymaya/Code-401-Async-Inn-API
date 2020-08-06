@@ -33,12 +33,12 @@ namespace AsyncInnAPI.Controllers
         }
 
         /// <summary>
-        /// Registers an agent
+        /// Creates an account
         /// </summary>
         /// <param name="register">A data transfer object containing registeration information</param>
         /// <returns>Response code with a message</returns>
         [Authorize(Policy = "PropertyManagerPrivilege")]
-        [HttpPost, Route("Register/Agent")]
+        [HttpPost, Route("Register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -52,83 +52,16 @@ namespace AsyncInnAPI.Controllers
                 LastName = register.LastName
             };
 
-            var result = await _userManager.CreateAsync(user, register.Password);
-
-            if (result.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(user, ApplicationRoles.Agent);
-
-                await _signInManager.SignInAsync(user, false);
-
-                return Ok("Agent Registeration Successful");
-            }
-
-            return BadRequest("Invalid Registeration");
-        }
-
-        /// <summary>
-        /// Registers a property manager
-        /// </summary>
-        /// <param name="register">A data transfer object containing registeration information</param>
-        /// <returns>Response code with a message</returns>
-        [Authorize(Policy = "DistrictManagerPrivilege")]
-        [HttpPost, Route("Register/PropertyManager")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> RegisterPropertyManager(RegisterDto register)
-        {
-            ApplicationUser user = new ApplicationUser()
-            {
-                Email = register.Email,
-                UserName = register.Email,
-                FirstName = register.FirstName,
-                LastName = register.LastName
-            };
+            if (User.IsInRole("PropertyManagerPrivilege") && (register.Role == "Property Manager" || register.Role == "District Manager"))
+                return Unauthorized("Unauthorized Regiseration");
 
             var result = await _userManager.CreateAsync(user, register.Password);
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, ApplicationRoles.PropertyManager);
+                await _userManager.AddToRoleAsync(user, register.Role);
 
-                await _signInManager.SignInAsync(user, false);
-
-                return Ok("Property Manager Registeration Successful");
-            }
-
-            return BadRequest("Invalid Registeration");
-        }
-
-        /// <summary>
-        /// Registers a district manager
-        /// </summary>
-        /// <param name="register">A data transfer object containing registeration information</param>
-        /// <returns>Response code with a message</returns>
-        [Authorize(Policy = "DistrictManagerPrivilege")]
-        [HttpPost, Route("Register/DistrictManager")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> RegisterDistrictManager(RegisterDto register)
-        {
-            ApplicationUser user = new ApplicationUser()
-            {
-                Email = register.Email,
-                UserName = register.Email,
-                FirstName = register.FirstName,
-                LastName = register.LastName
-            };
-
-            var result = await _userManager.CreateAsync(user, register.Password);
-
-            if (result.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(user, ApplicationRoles.DistrictManager);
-
-                await _signInManager.SignInAsync(user, false);
-
-                return Ok("District Manager Registeration Successful");
+                return Ok("Account Creation Successful");
             }
 
             return BadRequest("Invalid Registeration");

@@ -11,8 +11,8 @@ namespace AsyncInnAPI.Models
 
     public static class ApplicationRoles
     {
-        public const string DistrictManager = "DistrictManager";
-        public const string PropertyManager = "PropertyManager";
+        public const string DistrictManager = "District Manager";
+        public const string PropertyManager = "Property Manager";
         public const string Agent = "Agent";
     }
 }
