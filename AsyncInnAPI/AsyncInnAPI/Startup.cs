@@ -86,9 +86,9 @@ namespace AsyncInnAPI
             });
 
             string asyncInnDbContextConnectionString = Environment.IsDevelopment()
-                ? Configuration["ConnectionStrings:AsyncInnDbContextDevelopmentConnection"]
-                : Configuration["ConnectionStrings:AsyncInnDbContextProductionConnection"];
-
+                ? Configuration.GetConnectionString("AsyncInnDbContextDevelopmentConnection")
+                : Configuration.GetConnectionString("AsyncInnDbContextProductionConnection");
+            
             services.AddDbContext<AsyncInnDbContext>(options => options.UseNpgsql(asyncInnDbContextConnectionString));
 
             services.AddTransient<IHotelManager, HotelManager>();
