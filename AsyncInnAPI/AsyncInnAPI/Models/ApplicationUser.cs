@@ -8,4 +8,11 @@ namespace AsyncInnAPI.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
     }
+
+    public static class ApplicationRoles
+    {
+        public const string DistrictManager = "District Manager";
+        public const string PropertyManager = "Property Manager";
+        public const string Agent = "Agent";
+    }
 }

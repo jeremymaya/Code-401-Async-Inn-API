@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AsyncInnAPI.Models.Interfaces;
 using AsyncInnAPI.Models.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AsyncInnAPI.Controllers
 {
+    [Authorize(Policy = "DistrictManagerPrivilege")]
     [Route("api/[controller]")]
     [ApiController]
     public class RoomsController : ControllerBase
@@ -21,6 +23,7 @@ namespace AsyncInnAPI.Controllers
         }
 
         // GET: api/Rooms
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoomDto>>> GetRooms()
         {
@@ -28,6 +31,7 @@ namespace AsyncInnAPI.Controllers
         }
 
         // GET: api/Rooms/5
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<RoomDto>> GetRoom(int id)
         {
@@ -98,6 +102,7 @@ namespace AsyncInnAPI.Controllers
         }
 
         // POST: api/Rooms/{roomId}/Amenity/{amenityId}
+        [Authorize(Policy = "AgentPrivilege")]
         [HttpPost]
         [Route("{roomId}/Amenity/{amenityId}")]
         public async Task<ActionResult<RoomDto>> AddAmenityToRoom(int roomId, int amenityId)
@@ -108,6 +113,7 @@ namespace AsyncInnAPI.Controllers
         }
 
         // DELETE: api/Rooms/{roomId}/Amenity/{amenityId}
+        [Authorize(Policy = "AgentPrivilege")]
         [HttpDelete]
         [Route("{roomId}/Amenity/{amenityId}")]
         public async Task<ActionResult<RoomDto>> RemoveAmentityFromRoom(int roomId, int amenityId)

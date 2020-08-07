@@ -20,11 +20,11 @@ namespace AsyncInnAPI.Models.Services
             _rooms = rooms;
         }
 
-        public async Task<HotelRoomDto> CreateHotelRoom(HotelRoomDto dto)
+        public async Task<HotelRoomDto> CreateHotelRoom(int hotelId, HotelRoomDto dto)
         {
             HotelRoom hotelRoom = new HotelRoom()
             {
-                HotelId = dto.HotelId,
+                HotelId = hotelId,
                 RoomNumber = dto.RoomNumber,
                 RoomId = dto.RoomId,
                 Rate = dto.Rate,
@@ -35,7 +35,7 @@ namespace AsyncInnAPI.Models.Services
 
             await _context.SaveChangesAsync();
 
-            var hotelDto = await GetHotelRoom(dto.HotelId, dto.RoomNumber);
+            var hotelDto = await GetHotelRoom(hotelId, dto.RoomNumber);
 
             dto.Room = hotelDto.Room;
 
