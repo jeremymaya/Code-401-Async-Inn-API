@@ -23,6 +23,7 @@ namespace AsyncInnAPI.Controllers
         }
 
         // GET: api/Rooms
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoomDto>>> GetRooms()
         {
@@ -30,6 +31,7 @@ namespace AsyncInnAPI.Controllers
         }
 
         // GET: api/Rooms/5
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<RoomDto>> GetRoom(int id)
         {

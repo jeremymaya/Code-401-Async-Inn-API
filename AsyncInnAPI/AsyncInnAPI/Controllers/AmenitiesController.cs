@@ -28,6 +28,7 @@ namespace AsyncInnAPI.Controllers
         /// Gets a list of amenities
         /// </summary>
         /// <returns>A list of data transfer object containing amenity information</returns>
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<AmenityDto>>> GetAmenities()
@@ -40,6 +41,7 @@ namespace AsyncInnAPI.Controllers
         /// </summary>
         /// <param name="id">Amenity Id</param>
         /// <returns>A data transfer object containing amenity infromation</returns>
+        [AllowAnonymous]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
