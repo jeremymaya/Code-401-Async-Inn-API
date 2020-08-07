@@ -226,12 +226,47 @@ Sample Response of GET /api/Rooms
 
 ----
 
+## Using Postgres Instead of SQL Server on Docker
+
+Go to [ASP.NET Core Development with macOS](https://gist.github.com/jeremymaya/a36c1de8220d76beca85a2804a2cecc4) for more details.
+
+If you have not already, download the [Docker Desktop for Mac](https://hub.docker.com/editions/community/docker-ce-desktop-mac?tab=description).
+
+1. Download Postgres with the following command:
+
+    ```bash
+    docker pull posgtres
+    ```
+
+2. Launch the Docker Image with the following command:
+
+    ```bash
+    docker run --name psql -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=ReallyStrongPassowrd1234! -p 5432:5432 -d postgres
+    ```
+
+3. Update the connection string with the following:
+
+    ```json
+    "ConnectionStrings": {
+        "DefaultConnection": "Host=localhost;Database=DbName;Username=sa;Password=ReallyStrongPassword1234!"
+    }
+    ```
+
+4. Add a dependency on ```Npgsql.EntityFrameworkCore.PostgreSQL```
+
+----
+
 ## Credits
 
 * [Github - Amanda Iverson](https://github.com/Aiverson1011)
 * [ASP.NET Core Development with macOS](https://gist.github.com/jeremymaya/a36c1de8220d76beca85a2804a2cecc4)
 * [Documenting API endpoints - Documentation](https://idratherbewriting.com/learnapidoc/docapis_finished_doc_result.html)
 * [The Code Buzz - ASP.NET Core 3.1 – Use JWT Authorization Token in Swagger(OpenAPI)](https://thecodebuzz.com/jwt-authorization-token-swagger-open-api-asp-net-core-3-0/)
+* [Docker Hub - postgres](https://hub.docker.com/_/postgres)
+* [Hacker Noon - How To Install PostgreSQL With Docker Quickly](https://hackernoon.com/how-to-install-postgresql-with-docker-quickly-ki7g363m)
+* [Npgsql Doc - Entity Framework Core](https://www.npgsql.org/efcore/index.html)
+* [Code Maze - How to Configure PostgreSQL in Entity Framework Core](https://code-maze.com/configure-postgresql-ef-core/)
+* [medium@RobertKhou - Getting Started with Entity Framework Core (PostgreSQL)](https://medium.com/@RobertKhou/getting-started-with-entity-framework-core-postgresql-c6fa09681624)
 
 ----
 

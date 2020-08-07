@@ -46,7 +46,7 @@ namespace AsyncInnAPI
                 ? Configuration["ConnectionStrings:ApplicationUserDbContextDevelopmentConnection"]
                 : Configuration["ConnectionStrings:ApplicationUserDbContextProductionConnection"];
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(applicationUserDbContextConnectionString));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(applicationUserDbContextConnectionString));
 
             // Enable Identity based on ApplicationUsr and IdentityRole
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -86,10 +86,10 @@ namespace AsyncInnAPI
             });
 
             string asyncInnDbContextConnectionString = Environment.IsDevelopment()
-                ? Configuration["ConnectionStrings:AsyncInnDbContextDevelopmentConnection"]
-                : Configuration["ConnectionStrings:AsyncInnDbContextProductionConnection"];
-
-            services.AddDbContext<AsyncInnDbContext>(options => options.UseSqlServer(asyncInnDbContextConnectionString));
+                ? Configuration.GetConnectionString("AsyncInnDbContextDevelopmentConnection")
+                : Configuration.GetConnectionString("AsyncInnDbContextProductionConnection");
+            
+            services.AddDbContext<AsyncInnDbContext>(options => options.UseNpgsql(asyncInnDbContextConnectionString));
 
             services.AddTransient<IHotelManager, HotelManager>();
 
