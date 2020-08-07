@@ -10,6 +10,9 @@ namespace AsyncInnAPI.Data
         {
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseNpgsql("Host=db;Database=AsyncInnDbContext;Username=sa;Password=ReallyStrongPassword1234!");
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RoomAmenity>().HasKey(ce => new { ce.RoomId, ce.AmenityId });
