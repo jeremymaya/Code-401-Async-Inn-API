@@ -57,6 +57,8 @@ Diagram Credit: [Amanda Iverson](https://github.com/Aiverson1011)
 * RoomAmenities table is a pure join table
 * Layout is an enum
 
+----
+
 ## Features
 
 * RESTful API
@@ -229,6 +231,7 @@ Sample Response of GET /api/Rooms
 * [Github - Amanda Iverson](https://github.com/Aiverson1011)
 * [ASP.NET Core Development with macOS](https://gist.github.com/jeremymaya/a36c1de8220d76beca85a2804a2cecc4)
 * [Documenting API endpoints - Documentation](https://idratherbewriting.com/learnapidoc/docapis_finished_doc_result.html)
+* [The Code Buzz - ASP.NET Core 3.1 – Use JWT Authorization Token in Swagger(OpenAPI)](https://thecodebuzz.com/jwt-authorization-token-swagger-open-api-asp-net-core-3-0/)
 
 ----
 
