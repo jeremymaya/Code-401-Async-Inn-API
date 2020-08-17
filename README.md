@@ -241,7 +241,7 @@ If you have not already, download the [Docker Desktop for Mac](https://hub.docke
 2. Launch the Docker Image with the following command:
 
     ```bash
-    docker run --name psql -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=ReallyStrongPassowrd1234! -p 5432:5432 -d postgres
+    docker run --name psql -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=ReallyStrongPassword1234! -p 5432:5432 -d postgres
     ```
 
 3. Update the connection string with the following:
