@@ -18,11 +18,8 @@ jobs:
     - name: Build and push
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      # Change the directory to where Dockerfile is located using cd command before running Heroku CLI commands
-      # Add --arg DATABASE_URL=${{ secrets.DATABASE_URL }} to pass the DATABASE_URL stored in GitHub Secrets
       run: |
         cd ./AsyncInnAPI/AsyncInnAPI
-        heroku config:set
         heroku container:push web -a ${{ secrets.HEROKU_APP_NAME }} --arg ASYNC_INN_BRONZE_URL=${{ secrets.ASYNC_INN_BRONZE_URL }},DISTRICT_MANAGER_EMAIL=${{ secrets.DISTRICT_MANAGER_EMAIL }},DISTRICT_MANAGER_PASSWORD=${{ secrets.DISTRICT_MANAGER_PASSWORD }},JWT_ISSUER=${{ secrets.JWT_ISSUER }},JWT_KEY=${{ secrets.JWT_KEY }},USER_ROSE_URL=${{ secrets.USER_ROSE_URL }}
     - name: Release
       env:
