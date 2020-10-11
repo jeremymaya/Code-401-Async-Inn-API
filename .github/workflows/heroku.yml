@@ -20,7 +20,7 @@ jobs:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
         cd ./AsyncInnAPI/AsyncInnAPI
-        heroku container:push web -a ${{ secrets.HEROKU_APP_NAME }} --arg ASYNC_INN_BRONZE_URL=${{ secrets.ASYNC_INN_BRONZE_URL }},USER_ROSE_URL=${{ secrets.USER_ROSE_URL }}
+        heroku container:push web -a ${{ secrets.HEROKU_APP_NAME }} --arg ASYNC_INN_BRONZE_URL=${{ secrets.ASYNC_INN_BRONZE_URL }},DISTRICT_MANAGER_EMAIL=${{ secrets.DISTRICT_MANAGER_EMAIL }},DISTRICT_MANAGER_PASSWORD=${{ secrets.DISTRICT_MANAGER_PASSWORD }},JWT_ISSUER=${{ secrets.JWT_ISSUER }},JWT_KEY=${{ secrets.JWT_KEY }},USER_ROSE_URL=${{ secrets.USER_ROSE_URL }}
     - name: Release
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
