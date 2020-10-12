@@ -145,11 +145,11 @@ namespace AsyncInnAPI.Controllers
         {
             string jwtKey = _webHostEnvironment.IsDevelopment()
                 ? _configuration["JWT_KEY"]
-                : Environment.GetEnvironmentVariable("JWT_KEY");
+                : Environment.GetEnvironmentVariable("JWT_KEY_ENV");
 
             string jwtIssuer = _webHostEnvironment.IsDevelopment()
                 ? _configuration["JWT_ISSUER"]
-                : Environment.GetEnvironmentVariable("JWT_ISSUER");
+                : Environment.GetEnvironmentVariable("JWT_ISSUER_ENV");
 
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 

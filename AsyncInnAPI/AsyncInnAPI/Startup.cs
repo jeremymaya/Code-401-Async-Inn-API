@@ -27,22 +27,19 @@ namespace AsyncInnAPI
 
         public Startup(IWebHostEnvironment webHostEnvironment)
         {
-            WebHostEnvironment = webHostEnvironment;
             var builder = new ConfigurationBuilder().AddEnvironmentVariables();
             builder.AddUserSecrets<Startup>();
             Configuration = builder.Build();
+            WebHostEnvironment = webHostEnvironment;
         }
 
         // Source: https://n1ghtmare.github.io/2020-09-28/deploying-a-dockerized-aspnet-core-app-using-a-postgresql-db-to-heroku/
         private string GetHerokuConnectionString(string connectionString)
         {
-            // Get the connection string from the ENV variables
-            // Modified to bring in connection string from Secrets in Development
             string connectionUrl = WebHostEnvironment.IsDevelopment()
                 ? Configuration["ConnectionStrings:" + connectionString]
                 : Environment.GetEnvironmentVariable(connectionString);
 
-            // parse the connection string
             var databaseUri = new Uri(connectionUrl);
 
             string db = databaseUri.LocalPath.TrimStart('/');
@@ -179,7 +176,7 @@ namespace AsyncInnAPI
 
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            RoleInitializer.SeedData(serviceProvider, userManager, Configuration, WebHostEnvironment);
+            RoleInitializer.SeedData(serviceProvider, userManager, Configuration, env);
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();

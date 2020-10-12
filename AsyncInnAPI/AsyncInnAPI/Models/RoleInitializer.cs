@@ -40,7 +40,7 @@ namespace AsyncInnAPI.Models
         public static void SeedData(IServiceProvider serviceProvider, UserManager<ApplicationUser> users, IConfiguration _configuration, IWebHostEnvironment _webHostEnvironment)
         {
             using var dbContext = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
-            //dbContext.Database.EnsureCreated();
+            dbContext.Database.EnsureCreated();
             AddRoles(dbContext);
             SeedUsersAsync(users, _configuration, _webHostEnvironment);
         }
@@ -49,7 +49,7 @@ namespace AsyncInnAPI.Models
         {
             string districtManagerEmail = _webHostEnvironment.IsDevelopment()
                 ? _configuration["DISTRICT_MANAGER_EMAIL"]
-                : Environment.GetEnvironmentVariable("DISTRICT_MANAGER_EMAIL");
+                : Environment.GetEnvironmentVariable("DISTRICT_MANAGER_EMAIL_ENV");
 
             if (userManager.FindByEmailAsync(districtManagerEmail).Result == null)
             {
@@ -63,7 +63,7 @@ namespace AsyncInnAPI.Models
 
                 string districtManagerPassword = _webHostEnvironment.IsDevelopment()
                     ? _configuration["DISTRICT_MANAGER_PASSWORD"]
-                    : Environment.GetEnvironmentVariable("DISTRICT_MANAGER_PASSWORD");
+                    : Environment.GetEnvironmentVariable("DISTRICT_MANAGER_PASSWORD_ENV");
 
                 IdentityResult result = userManager.CreateAsync(user, districtManagerPassword).Result;
 
