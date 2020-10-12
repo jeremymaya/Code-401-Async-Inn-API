@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using AsyncInnAPI.Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace AsyncInnAPI.Models
 {
@@ -35,27 +37,35 @@ namespace AsyncInnAPI.Models
             }
         };
 
-        public static void SeedData(IServiceProvider serviceProvider, UserManager<ApplicationUser> users, IConfiguration _configuration)
+        public static void SeedData(IServiceProvider serviceProvider, UserManager<ApplicationUser> users, IConfiguration _configuration, IWebHostEnvironment _webHostEnvironment)
         {
             using var dbContext = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
             dbContext.Database.EnsureCreated();
             AddRoles(dbContext);
-            SeedUsersAsync(users, _configuration);
+            SeedUsersAsync(users, _configuration, _webHostEnvironment);
         }
 
-        private static void SeedUsersAsync(UserManager<ApplicationUser> userManager, IConfiguration _configuration)
+        private static void SeedUsersAsync(UserManager<ApplicationUser> userManager, IConfiguration _configuration, IWebHostEnvironment _webHostEnvironment)
         {
-            if (userManager.FindByEmailAsync(_configuration["DistrictManagerEmail"]).Result == null)
+            string districtManagerEmail = _webHostEnvironment.IsDevelopment()
+                ? _configuration["DISTRICT_MANAGER_EMAIL"]
+                : Environment.GetEnvironmentVariable("DISTRICT_MANAGER_EMAIL_ENV");
+
+            if (userManager.FindByEmailAsync(districtManagerEmail).Result == null)
             {
                 ApplicationUser user = new ApplicationUser
                 {
-                    UserName = _configuration["DistrictManagerEmail"],
-                    Email = _configuration["DistrictManagerEmail"],
+                    UserName = districtManagerEmail,
+                    Email = districtManagerEmail,
                     FirstName = "Default",
                     LastName = "Manager"
                 };
 
-                IdentityResult result = userManager.CreateAsync(user, _configuration["DistrictManagerPassword"]).Result;
+                string districtManagerPassword = _webHostEnvironment.IsDevelopment()
+                    ? _configuration["DISTRICT_MANAGER_PASSWORD"]
+                    : Environment.GetEnvironmentVariable("DISTRICT_MANAGER_PASSWORD_ENV");
+
+                IdentityResult result = userManager.CreateAsync(user, districtManagerPassword).Result;
 
                 if (result.Succeeded)
                     userManager.AddToRoleAsync(user, ApplicationRoles.DistrictManager).Wait();

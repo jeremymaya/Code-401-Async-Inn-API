@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  asyncinnapi:
+    image: ${DOCKER_REGISTRY-}asyncinnapi
+    build:
+      context: .
+      dockerfile: AsyncInnAPI/Dockerfile

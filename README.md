@@ -1,6 +1,13 @@
 # Code-401-Async-Inn-API
 
-![Actions Status](https://github.com/jeremymaya/Code-401-Async-Inn-API/workflows/build/badge.svg)
+![Actions Status](https://github.com/jeremymaya/Code-401-Async-Inn-API/workflows/build/badge.svg)  
+![Actions Status](https://github.com/jeremymaya/Code-401-Async-Inn-API/workflows/deploy/badge.svg)
+
+Author: Kyungrae Kim
+
+Endpoint: <https://asyncinn.herokuapp.com>
+
+----
 
 ## Async Inn API
 
@@ -16,7 +23,7 @@ Author: Kyungrae Kim
 
 ## Description
 
-This is a RESTful API server built using ASP.NET Core to allow Async Hotel mangement to better manage the assets in their hotels. This application can modify and manage rooms, amenities, and new hotel locations. The data entered by the user will persist across a relational database and maintain its integrity as changes are made to the system.
+This is a RESTful API server built using ASP.NET Core to allow Async Hotel management to better manage the assets in their hotels. This application can modify and manage rooms, amenities, and new hotel locations. The data entered by the user will persist across a relational database and maintain its integrity as changes are made to the system.
 
 The Below is link to the MVC web application version of the assignment:
 
@@ -65,7 +72,7 @@ Diagram Credit: [Amanda Iverson](https://github.com/Aiverson1011)
 * Entity Framework Core
 * Dependency Injection
 * Data Transfer Objects
-* Idenity
+* Identity
 * Authorization
 * JSON Web Token (JWT)
 
@@ -101,7 +108,7 @@ Sample Request Body of POST /api/Account/Register
 | POST | ```/api/Amenities``` | |
 | GET | ```/api/Amenities/{id}``` | |
 | PUT | ```/api/Amenities/{id}``` | |
-| DELTE | ```/api/Amenities/{id}``` | |
+| DELETE | ```/api/Amenities/{id}``` | |
 
 ```json
 Sample Response of GET /api/Amenities
@@ -122,7 +129,7 @@ Sample Response of GET /api/Amenities
 | POST | ```/api/Hotels/{hotelId}/Rooms``` | |
 | GET | ```/api/Hotels/{hotelId}/Rooms/{roomNumber}``` | |
 | PUT | ```/api/Hotels/{hotelId}/Rooms/{roomNumber}``` | |
-| DELTE | ```/api/Hotels/{hotelId}/Rooms/{roomNumber}``` | |
+| DELETE | ```/api/Hotels/{hotelId}/Rooms/{roomNumber}``` | |
 
 ```json
 Sample Response of GET /api/Hotels/{hotelId}/Rooms
@@ -157,7 +164,7 @@ Sample Response of GET /api/Hotels/{hotelId}/Rooms
 | POST | ```/api/Hotels``` |
 | GET | ```/api/Hotels/{id}``` |
 | PUT | ```/api/Hotels/{id}``` |
-| DELTE | ```/api/Hotels/{id}``` |
+| DELETE | ```/api/Hotels/{id}``` |
 
 ```json
 Sample Response of GET /api/Hotels
@@ -204,7 +211,7 @@ Sample Response of GET /api/Hotels
 | PUT | ```/api/Rooms/{id}``` | |
 | DELETE | ```/api/Rooms/{id}``` | |
 | POST | ```/api/Rooms/{roomId}/Amenity/{amenityId}``` | |
-| DELTE | ```/api/Rooms/{roomId}/Amenity/{amenityId}``` | |
+| DELETE | ```/api/Rooms/{roomId}/Amenity/{amenityId}``` | |
 
 ```json
 Sample Response of GET /api/Rooms
@@ -272,6 +279,7 @@ If you have not already, download the [Docker Desktop for Mac](https://hub.docke
 
 ## Change Log
 
+* 1.7: *Deployed to Heroku* - 12 October 2020
 * 1.6: *Lab 18 Completed* - 5 Aug 2020
 * 1.5: *Lab 17 Completed* - 3 Aug 2020
 * 1.4: *Lab 16 Completed* - 2 Aug 2020

@@ -23,14 +23,29 @@ namespace AsyncInnAPI
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        public IHostEnvironment Environment { get; }
+        public IWebHostEnvironment WebHostEnvironment { get; }
 
-        public Startup(IHostEnvironment environment)
+        public Startup(IWebHostEnvironment webHostEnvironment)
         {
-            Environment = environment;
             var builder = new ConfigurationBuilder().AddEnvironmentVariables();
             builder.AddUserSecrets<Startup>();
             Configuration = builder.Build();
+            WebHostEnvironment = webHostEnvironment;
+        }
+
+        // Source: https://n1ghtmare.github.io/2020-09-28/deploying-a-dockerized-aspnet-core-app-using-a-postgresql-db-to-heroku/
+        private string GetHerokuConnectionString(string connectionString)
+        {
+            string connectionUrl = WebHostEnvironment.IsDevelopment()
+                ? Configuration["ConnectionStrings:" + connectionString]
+                : Environment.GetEnvironmentVariable(connectionString);
+
+            var databaseUri = new Uri(connectionUrl);
+
+            string db = databaseUri.LocalPath.TrimStart('/');
+            string[] userInfo = databaseUri.UserInfo.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+            return $"User ID={userInfo[0]};Password={userInfo[1]};Host={databaseUri.Host};Port={databaseUri.Port};Database={db};Pooling=true;SSL Mode=Require;Trust Server Certificate=True;";
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -42,16 +57,20 @@ namespace AsyncInnAPI
             services.AddControllers(options => { options.Filters.Add(new AuthorizeFilter()); })
                     .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            string applicationUserDbContextConnectionString = Environment.IsDevelopment()
-                ? Configuration["ConnectionStrings:ApplicationUserDbContextDevelopmentConnection"]
-                : Configuration["ConnectionStrings:ApplicationUserDbContextProductionConnection"];
-
-            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(applicationUserDbContextConnectionString));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(GetHerokuConnectionString("USER_ROSE_URL_ENV")));
 
             // Enable Identity based on ApplicationUsr and IdentityRole
             services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
+
+            string jwtKey = WebHostEnvironment.IsDevelopment()
+                ? Configuration["JWT_KEY"]
+                : Environment.GetEnvironmentVariable("JWT_KEY_ENV");
+
+            string jwtIssuer = WebHostEnvironment.IsDevelopment()
+                ? Configuration["JWT_ISSUER"]
+                : Environment.GetEnvironmentVariable("JWT_ISSUER_ENV");
 
             // Enable Authentication with JWT
             // Define JWT Beaere defaults and parameters
@@ -68,9 +87,9 @@ namespace AsyncInnAPI
                     ValidateAudience = true,
                     ValidateLifetime = false,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration["JWTIssuer"],
-                    ValidAudience = Configuration["JWTIssuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWTKey"]))
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtIssuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
                 };
             });
 
@@ -84,12 +103,8 @@ namespace AsyncInnAPI
                                                                                  ApplicationRoles.PropertyManager,
                                                                                  ApplicationRoles.Agent));
             });
-
-            string asyncInnDbContextConnectionString = Environment.IsDevelopment()
-                ? Configuration.GetConnectionString("AsyncInnDbContextDevelopmentConnection")
-                : Configuration.GetConnectionString("AsyncInnDbContextProductionConnection");
             
-            services.AddDbContext<AsyncInnDbContext>(options => options.UseNpgsql(asyncInnDbContextConnectionString));
+            services.AddDbContext<AsyncInnDbContext>(options => options.UseNpgsql(GetHerokuConnectionString("ASYNC_INN_BRONZE_URL_ENV")));
 
             services.AddTransient<IHotelManager, HotelManager>();
 
@@ -161,7 +176,7 @@ namespace AsyncInnAPI
 
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            RoleInitializer.SeedData(serviceProvider, userManager, Configuration);
+            RoleInitializer.SeedData(serviceProvider, userManager, Configuration, env);
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();

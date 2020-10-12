@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 using AsyncInnAPI.Models;
 using AsyncInnAPI.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AsyncInnAPI.Controllers
@@ -24,12 +26,14 @@ namespace AsyncInnAPI.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
@@ -139,11 +143,19 @@ namespace AsyncInnAPI.Controllers
 
         private JwtSecurityToken AuthenticateToken(List<Claim> claims)
         {
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTKey"]));
+            string jwtKey = _webHostEnvironment.IsDevelopment()
+                ? _configuration["JWT_KEY"]
+                : Environment.GetEnvironmentVariable("JWT_KEY_ENV");
+
+            string jwtIssuer = _webHostEnvironment.IsDevelopment()
+                ? _configuration["JWT_ISSUER"]
+                : Environment.GetEnvironmentVariable("JWT_ISSUER_ENV");
+
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["JWTIssuer"],
-                audience: _configuration["JWTIssuer"],
+                issuer: jwtIssuer,
+                audience: jwtIssuer,
                 expires: DateTime.UtcNow.AddHours(24),
                 claims: claims,
                 signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256));
