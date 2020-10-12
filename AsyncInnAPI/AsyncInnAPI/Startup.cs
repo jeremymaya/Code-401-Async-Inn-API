@@ -57,7 +57,7 @@ namespace AsyncInnAPI
             services.AddControllers(options => { options.Filters.Add(new AuthorizeFilter()); })
                     .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(GetHerokuConnectionString("USER_ROSE_URL")));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(GetHerokuConnectionString("USER_ROSE_URL_ENV")));
 
             // Enable Identity based on ApplicationUsr and IdentityRole
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -104,7 +104,7 @@ namespace AsyncInnAPI
                                                                                  ApplicationRoles.Agent));
             });
             
-            services.AddDbContext<AsyncInnDbContext>(options => options.UseNpgsql(GetHerokuConnectionString("ASYNC_INN_BRONZE_URL")));
+            services.AddDbContext<AsyncInnDbContext>(options => options.UseNpgsql(GetHerokuConnectionString("ASYNC_INN_BRONZE_URL_ENV")));
 
             services.AddTransient<IHotelManager, HotelManager>();
 
