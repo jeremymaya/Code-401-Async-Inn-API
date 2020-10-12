@@ -66,11 +66,11 @@ namespace AsyncInnAPI
 
             string jwtKey = WebHostEnvironment.IsDevelopment()
                 ? Configuration["JWT_KEY"]
-                : Environment.GetEnvironmentVariable("JWT_KEY");
+                : Environment.GetEnvironmentVariable("JWT_KEY_ENV");
 
             string jwtIssuer = WebHostEnvironment.IsDevelopment()
                 ? Configuration["JWT_ISSUER"]
-                : Environment.GetEnvironmentVariable("JWT_ISSUER");
+                : Environment.GetEnvironmentVariable("JWT_ISSUER_ENV");
 
             // Enable Authentication with JWT
             // Define JWT Beaere defaults and parameters
