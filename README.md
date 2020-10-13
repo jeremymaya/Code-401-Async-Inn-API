@@ -17,8 +17,6 @@ Endpoint: <https://asyncinn.herokuapp.com>
 * Lab 13 -  Dependency Injection
 * Lab 12 - Intro to Entity Framework Core and APIs
 
-Author: Kyungrae Kim
-
 ----
 
 ## Description
