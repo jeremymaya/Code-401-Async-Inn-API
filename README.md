@@ -240,7 +240,7 @@ If you have not already, download the [Docker Desktop for Mac](https://hub.docke
 1. Download Postgres with the following command:
 
     ```bash
-    docker pull posgtres
+    docker pull postgres:latest
     ```
 
 2. Launch the Docker Image with the following command:
